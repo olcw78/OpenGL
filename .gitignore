@@ -1,0 +1,14 @@
+.idea/
+cmake-build-debug/
+build/
+
+# Directories
+**bin/
+**bin-int/
+
+# Files
+*.user
+*imgui.ini
+
+# Visual Studio
+.vs/

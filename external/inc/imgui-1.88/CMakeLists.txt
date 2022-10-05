@@ -1,0 +1,12 @@
+add_library(imgui
+        imconfig.h
+        imgui_internal.h
+        imgui.h
+        imstb_rectpack.h
+        imstb_textedit.h
+        imstb_truetype.h
+        imgui_widgets.cpp
+        imgui_tables.cpp
+        imgui_draw.cpp
+        imgui_demo.cpp
+)
