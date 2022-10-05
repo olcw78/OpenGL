@@ -11,7 +11,13 @@ public:
     static int init(int width, int height, const char *title);
 
 private:
-    static void on_resize_frame_buffer(struct GLFWwindow* window, int width, int height);
+    Runner() = delete;
+
+    ~Runner() = delete;
+
+    static void on_resize_frame_buffer(struct GLFWwindow *window, int width, int height);
+
+    static void on_receive_input(struct GLFWwindow *window);
 };
 
 

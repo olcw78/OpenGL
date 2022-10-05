@@ -38,8 +38,12 @@ int Runner::init(int width, int height, const char *title) {
 
     glfwSetFramebufferSizeCallback(pWindow, Runner::on_resize_frame_buffer);
 
-
     while (!glfwWindowShouldClose(pWindow)) {
+        on_receive_input(pWindow);
+
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
         glfwSwapBuffers(pWindow);
         glfwPollEvents();
     }
@@ -50,4 +54,10 @@ int Runner::init(int width, int height, const char *title) {
 
 void Runner::on_resize_frame_buffer(GLFWwindow *window, int width, int height) {
     glViewport(0, 0, width, height);
+}
+
+void Runner::on_receive_input(GLFWwindow *window) {
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, true);
+    }
 }
