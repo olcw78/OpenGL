@@ -19,14 +19,14 @@ public:
 private:
     static void on_resize_frame_buffer(struct GLFWwindow *window, int width, int height);
 
-    static void on_receive_input(struct GLFWwindow *window);
+    static void process_input(struct GLFWwindow *window);
 
 public:
 
 private:
     int width;
     int height;
-    
+
     const char *title;
 
     std::string vertex_shader_str;

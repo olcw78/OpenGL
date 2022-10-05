@@ -93,10 +93,16 @@ int Runner::init() {
     glDeleteShader(fragment_shader);
 
     // create and bind VBO.
-    const float vertices[]{
-            -0.5f, -0.5f, 0.0f,
-            0.5f, -0.5f, 0.0f,
-            0.0f, 0.5f, 0.0f
+    constexpr const float vertices[] = {
+            0.5f, 0.5f, 0.0f,  // top right
+            0.5f, -0.5f, 0.0f,  // bottom right
+            -0.5f, -0.5f, 0.0f,  // bottom left
+            -0.5f, 0.5f, 0.0f   // top left
+    };
+
+    constexpr const unsigned indices[]{
+            0, 1, 3,
+            1, 2, 3
     };
 
     // create and bind VAO.
@@ -106,32 +112,53 @@ int Runner::init() {
     unsigned vbo;
     glGenBuffers(1, &vbo);
 
+    unsigned ebo;
+    glGenBuffers(1, &ebo);
+
+    // bind the VAO first, then bind and set vertex buffer(s),
+    // then configure vertex buffer(s).
     glBindVertexArray(vao);
+
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // linking vertex attributes.
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
 
+    // glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    // unbind vao after so other vao calls won't modify this VAO.
+    glBindVertexArray(0);
+
 
 #pragma endregion Render Triangle
 
     while (!glfwWindowShouldClose(window)) {
-        on_receive_input(window);
+        process_input(window);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
         glUseProgram(shader_program);
         glBindVertexArray(vao);
-
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        // glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(window);
-        glfwPollEvents();
+        glfwPollEvents(); // poll IO events.
     }
+
+    glDeleteVertexArrays(1, &vao);
+    glDeleteBuffers(1, &vbo);
+    glDeleteBuffers(1, &ebo);
+    glDeleteProgram(shader_program);
 
     glfwTerminate();
 
@@ -142,7 +169,7 @@ void Runner::on_resize_frame_buffer(GLFWwindow *window, int width, int height) {
     glViewport(0, 0, width, height);
 }
 
-void Runner::on_receive_input(GLFWwindow *window) {
+void Runner::process_input(GLFWwindow *window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(window, true);
     }

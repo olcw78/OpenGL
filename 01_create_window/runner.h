@@ -17,7 +17,7 @@ private:
 
     static void on_resize_frame_buffer(struct GLFWwindow *window, int width, int height);
 
-    static void on_receive_input(struct GLFWwindow *window);
+    static void process_input(Runner::GLFWwindow *window);
 };
 
 
