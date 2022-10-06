@@ -8,8 +8,6 @@
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
 #include <fmt/core.h>
-#include <fstream>
-#include <sstream>
 
 shader::shader(std::string_view vertex_shader_path, std::string_view fragment_shader_path)
         : _vertex_shader_code{std::move(fstream_guard()(vertex_shader_path))},

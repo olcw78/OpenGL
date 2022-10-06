@@ -19,21 +19,21 @@ namespace {
 //                                                               "vertex_color/frag.glsl");
 
     // dynamic color
-    std::string dynamic_color_vertex_shader_src = fmt::format(FMT_STRING("{}{}"), shader_dir_prefix,
-                                                              "dynamic_color/vert.glsl");
-    std::string dynamic_color_fragment_shader_src = fmt::format(FMT_STRING("{}{}"), shader_dir_prefix,
-                                                                "dynamic_color/frag.glsl");
+//    std::string dynamic_color_vertex_shader_src = fmt::format(FMT_STRING("{}{}"), shader_dir_prefix,
+//                                                              "dynamic_color/vert.glsl");
+//    std::string dynamic_color_fragment_shader_src = fmt::format(FMT_STRING("{}{}"), shader_dir_prefix,
+//                                                                "dynamic_color/frag.glsl");
 
     // vertex color2
-    std::string vertex_color_vertex_shader_src2 = fmt::format(FMT_STRING("{}{}"), shader_dir_prefix,
-                                                              "vertex_color2/vert.glsl");
-    std::string vertex_color_fragment_shader_src2 = fmt::format(FMT_STRING("{}{}"), shader_dir_prefix,
-                                                                "vertex_color2/frag.glsl");
+    std::string vertex_color2_vertex_shader_src = fmt::format(FMT_STRING("{}{}"), shader_dir_prefix,
+                                                                "vertex_color2/vert.glsl");
+    std::string vertex_color2_fragment_shader_src = fmt::format(FMT_STRING("{}{}"), shader_dir_prefix,
+                                                                  "vertex_color2/frag.glsl");
 }
 
 int main() {
     auto runner = Runner(1024, 768, "03. shaders",
-                         ::vertex_color_vertex_shader_src2,
-                         ::vertex_color_fragment_shader_src2);
+                         ::vertex_color2_vertex_shader_src,
+                         ::vertex_color2_fragment_shader_src);
     runner.init(false);
 }
