@@ -8,6 +8,8 @@ set(CMAKE_CXX_STANDARD 17
 set(EXT_INC_DIR "${PROJECT_SOURCE_DIR}/external/inc")
 set(EXT_LIB_DIR "${PROJECT_SOURCE_DIR}/external/lib")
 set(SHARED_INC_DIR "${PROJECT_SOURCE_DIR}/shared")
+set(GLM_INC_DIR "${CMAKE_INSTALL_PREFIX}/include")
+message("GLM INC DIR: ${GLM_INC_DIR}")
 
 # lib
 set(FMT_LIB "${EXT_LIB_DIR}/fmt/libfmt.9.1.0.dylib")
@@ -23,3 +25,4 @@ add_subdirectory(01_create_window)
 add_subdirectory(02_render_triangle)
 add_subdirectory(03_shaders)
 add_subdirectory(04_textures)
+add_subdirectory(05_transformations)
