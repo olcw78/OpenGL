@@ -14,5 +14,5 @@ int main() {
     auto runner = Runner(1024, 768, "02. render triangle",
                          vertex_shader_src.c_str(),
                          fragment_shader_src.c_str());
-    runner.init();
+    runner.init(false);
 }

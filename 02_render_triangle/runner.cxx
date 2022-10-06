@@ -25,7 +25,7 @@ Runner::~Runner() {
     glfwTerminate();
 }
 
-int Runner::init() {
+int Runner::init(bool enable_wireframe) {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
@@ -144,7 +144,8 @@ int Runner::init() {
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        if (enable_wireframe)
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glUseProgram(shader_program);
         glBindVertexArray(vao);

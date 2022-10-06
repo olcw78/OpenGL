@@ -14,7 +14,7 @@ public:
 
     virtual ~Runner();
 
-    int init();
+    int init(bool enable_wireframe);
 
 private:
     static void on_resize_frame_buffer(struct GLFWwindow *window, int width, int height);
