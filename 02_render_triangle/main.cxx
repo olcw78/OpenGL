@@ -1,18 +1,16 @@
 #include "runner.h"
 
-#include <fmt/format.h>
+#include "assets_inc.h"
 
-namespace {
-    constexpr const char *shader_dir_prefix =
-            "/Users/highp/workspace/graphics/opengl/02_render_triangle/shader/";
-
-    std::string constant_color_vertex_shader_src = fmt::format("{}{}", shader_dir_prefix, "vert.glsl");
-    std::string constant_color_fragment_shader_src = fmt::format("{}{}", shader_dir_prefix, "frag.glsl");
-}
+using namespace highp::assets::shader;
 
 int main() {
-    auto runner = Runner(1024, 768, "02. render triangle",
-                         constant_color_vertex_shader_src.c_str(),
-                         constant_color_fragment_shader_src.c_str());
+    auto shader_paths = get_shader_paths(e_shader_type::constant_color);
+    auto runner = Runner(
+            1024,
+            768,
+            "02. render triangle",
+            shader_paths[0].c_str(),
+            shader_paths[1].c_str());
     runner.init(false);
 }

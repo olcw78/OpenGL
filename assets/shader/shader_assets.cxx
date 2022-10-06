@@ -1,0 +1,60 @@
+//
+// Created by 이윤상 on 2022/10/07.
+//
+
+#include "shader_assets.h"
+
+#include <fmt/core.h>
+#include <fmt/format.h>
+
+namespace highp::assets::shader {
+    std::string make_source_path(const char *dir_name, const char *shader_name) {
+        return fmt::format(FMT_STRING("{}{}/{}"), shader_dir_prefix, dir_name, shader_name);
+    }
+
+    shader_paths get_shader_paths(e_shader_type shader_type) {
+        switch (shader_type) {
+            case e_shader_type::constant_color:
+                return {
+                        make_source_path("constant color", "main.vert"),
+                        make_source_path("constant color", "main.frag")
+                };
+
+            case e_shader_type::vertex_color:
+                return {
+                        make_source_path("vertex color", "main.vert"),
+                        make_source_path("vertex color", "main.frag")
+                };
+
+            case e_shader_type::uniform:
+                return {
+                        make_source_path("uniform", "main.vert"),
+                        make_source_path("uniform", "main.frag")
+                };
+
+            case e_shader_type::fixed_vertex_color:
+                return {
+                        make_source_path("fixed vertex color", "main.vert"),
+                        make_source_path("fixed vertex color", "main.frag")
+                };
+
+            case e_shader_type::texture_mapping:
+                return {
+                        make_source_path("texture mapping", "main.vert"),
+                        make_source_path("texture mapping", "main.frag")
+                };
+
+            case e_shader_type::texture_mapping_vertex_color_tinted:
+                return {
+                        make_source_path("texture mapping vertex color tinted", "main.vert"),
+                        make_source_path("texture mapping vertex color tinted", "main.frag")
+                };
+
+            case e_shader_type::texture_blending:
+                return {
+                        make_source_path("texture blending", "main.vert"),
+                        make_source_path("texture blending", "main.frag")
+                };
+        }
+    }
+}

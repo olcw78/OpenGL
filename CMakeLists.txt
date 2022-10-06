@@ -9,6 +9,7 @@ include(VAR.cmake)
 
 add_subdirectory(external)
 add_subdirectory(shared)
+add_subdirectory(assets)
 add_subdirectory(01_create_window)
 add_subdirectory(02_render_triangle)
 add_subdirectory(03_shaders)
