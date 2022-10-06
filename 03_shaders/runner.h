@@ -5,12 +5,15 @@
 #ifndef OPENGL_RUNNER_H
 #define OPENGL_RUNNER_H
 
-#include <string>
+#include <string_view>
+#include <memory>
+#include "shader/shader.h"
 
 class Runner final {
 public:
-    explicit Runner(int width, int height, const char *title, const char *vertex_shader_src_path_abs,
-                    const char *fragment_shader_src_path_abs);
+    explicit Runner(int width, int height, const char *title,
+                    std::string_view vertex_shader_src_path_abs,
+                    std::string_view fragment_shader_src_path_abs);
 
     virtual ~Runner();
 
@@ -26,16 +29,10 @@ public:
 private:
     int _width;
     int _height;
-
     const char *_title;
 
-    std::string vertex_shader_str;
-    const char *vertex_shader_src;
-
-    std::string fragment_shader_str;
-    const char *fragment_shader_src;
-
     struct GLFWwindow *_window;
+    std::unique_ptr<shader> _shader;
 };
 
 

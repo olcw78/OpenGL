@@ -8,11 +8,11 @@
 #include <GLFW/glfw3.h>
 #include <fmt/core.h>
 
-#include "fstream_guard.h"
+#include "fstream_guard/fstream_guard.h"
 
 
 Runner::Runner(int width, int height, const char *title, const char *vertex_shader_src_path_abs,
-               const char *fragment_shader_src_path_abs) : width(width), height(height), title(title) {
+               const char *fragment_shader_src_path_abs) : _width(width), _height(height), _title(title) {
     vertex_shader_str = std::move(fstream_guard()(vertex_shader_src_path_abs));
     vertex_shader_src = vertex_shader_str.c_str();
 
@@ -34,15 +34,15 @@ int Runner::init(bool enable_wireframe) {
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 #endif
 
-    window = glfwCreateWindow(width, height, title, nullptr, nullptr);
-    if (window == nullptr) {
+    _window = glfwCreateWindow(_width, _height, _title, nullptr, nullptr);
+    if (_window == nullptr) {
         fmt::print("[error] failed to create GLFW window\n");
         glfwTerminate();
 
         return -1;
     }
 
-    glfwMakeContextCurrent(window);
+    glfwMakeContextCurrent(_window);
 
     if (!gladLoadGL((GLADloadfunc) glfwGetProcAddress)) {
         fmt::print("[error] failed to init GLAD\n");
@@ -50,9 +50,9 @@ int Runner::init(bool enable_wireframe) {
         return -1;
     }
 
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, _width, _height);
 
-    glfwSetFramebufferSizeCallback(window, Runner::on_resize_frame_buffer);
+    glfwSetFramebufferSizeCallback(_window, Runner::on_resize_frame_buffer);
 
 #pragma region Render Triangle
 
@@ -138,8 +138,8 @@ int Runner::init(bool enable_wireframe) {
 
 #pragma endregion Render Triangle
 
-    while (!glfwWindowShouldClose(window)) {
-        process_input(window);
+    while (!glfwWindowShouldClose(_window)) {
+        process_input(_window);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -152,7 +152,7 @@ int Runner::init(bool enable_wireframe) {
         // glDrawArrays(GL_TRIANGLES, 0, 3);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-        glfwSwapBuffers(window);
+        glfwSwapBuffers(_window);
         glfwPollEvents(); // poll IO events.
     }
 
