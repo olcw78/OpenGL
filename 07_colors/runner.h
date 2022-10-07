@@ -7,6 +7,8 @@
 
 #include <string_view>
 #include <memory>
+#include <initializer_list>
+#include <vector>
 
 #include "shader/shader.h"
 
@@ -16,13 +18,12 @@
 };
 #endif
 
+
 namespace highp {
     class Runner final {
     public:
         explicit Runner(int width, int height, const char *title,
-                        std::string_view vertex_shader_src_path_abs,
-                        std::string_view fragment_shader_src_path_abs
-        );
+                        std::initializer_list<std::string_view> shader_paths);
 
         virtual ~Runner();
 
@@ -46,6 +47,9 @@ namespace highp {
 
         GLFWwindow *_window;
         std::unique_ptr<shader> _shader;
+
+        std::vector<std::string_view> _vertex_shader_paths;
+        std::vector<std::string_view> _fragment_shader_paths;
     };
 }
 

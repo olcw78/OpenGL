@@ -10,21 +10,13 @@
 
 #include <fmt/core.h>
 
-shader::shader(std::string_view vertex_shader_path, std::string_view fragment_shader_path)
-        : _vertex_shader_code{std::move(fstream_guard()(vertex_shader_path))},
-          _fragment_shader_code{std::move(fstream_guard()(fragment_shader_path))} {
-    //
-}
-
+#include <algorithm>
 
 shader::~shader() {
-//    glDeleteVertexArrays(1, &vao);
-//    glDeleteBuffers(1, &vbo);
-//    glDeleteBuffers(1, &ebo);
     glDeleteProgram(_shader_program);
 }
 
-void shader::check_error_from_result(unsigned id, bool is_compile_or_link) {
+void shader::check_error_from_result(unsigned id, bool is_compile_or_link) const {
     int is_success;
     char info_log[512]{' ',};
 
@@ -43,31 +35,44 @@ void shader::check_error_from_result(unsigned id, bool is_compile_or_link) {
     }
 }
 
-void shader::compile_and_link() {
+unsigned shader::compile_vertex_shader(const char *src) const {
+    const std::string as_str{fstream_guard()(src)};
+    const char *shader_src = as_str.c_str();
 
-    // compile vertex shader.
-    const char *vertex_src = _vertex_shader_code.c_str();
-    unsigned vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_shader, 1, &vertex_src, nullptr);
+    const unsigned vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertex_shader, 1, &shader_src, nullptr);
     glCompileShader(vertex_shader);
     check_error_from_result(vertex_shader);
 
-    // compile fragment shader.
-    const char *fragment_src = _fragment_shader_code.c_str();
-    unsigned fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_shader, 1, &fragment_src, nullptr);
+    return vertex_shader;
+}
+
+unsigned shader::compile_fragment_shader(const char *src) const {
+    const std::string as_str{fstream_guard()(src)};
+    const char *shader_src = as_str.c_str();
+
+    const unsigned fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragment_shader, 1, &shader_src, nullptr);
     glCompileShader(fragment_shader);
     check_error_from_result(fragment_shader);
 
+    return fragment_shader;
+}
+
+void shader::compile_and_link(std::list<const unsigned> const &shaders) {
     // link shaders to the shader _shader_program.
     this->_shader_program = glCreateProgram();
-    glAttachShader(_shader_program, vertex_shader);
-    glAttachShader(_shader_program, fragment_shader);
+
+    std::for_each(std::begin(shaders), std::end(shaders), [this](const unsigned int shader) {
+        glAttachShader(this->_shader_program, shader);
+    });
+
     glLinkProgram(_shader_program);
     check_error_from_result(_shader_program, false);
 
-    glDeleteShader(vertex_shader);
-    glDeleteShader(fragment_shader);
+    std::for_each(std::begin(shaders), std::end(shaders), [this](unsigned int const shader) {
+        glDeleteShader(shader);
+    });
 }
 
 void shader::use() {
@@ -86,9 +91,28 @@ void shader::set_int(std::string_view name, int value) const {
     glUniform1i(glGetUniformLocation(_shader_program, name.data()), value);
 }
 
-void shader::set_mat4(std::string_view name, glm::mat4 const& mat) const {
+void shader::set_mat4(std::string_view name, glm::mat4 &&mat) const {
     glUniformMatrix4fv(glGetUniformLocation(_shader_program, name.data()), 1, GL_FALSE, glm::value_ptr(mat));
 }
 
+void shader::set_mat3(std::string_view name, glm::mat3 &&mat) const {
+    glUniformMatrix3fv(glGetUniformLocation(_shader_program, name.data()), 1, GL_FALSE, glm::value_ptr(mat));
+}
+
+void shader::set_mat2(std::string_view name, glm::mat2 &&mat) const {
+    glUniformMatrix2fv(glGetUniformLocation(_shader_program, name.data()), 1, GL_FALSE, glm::value_ptr(mat));
+}
+
+void shader::set_vec4(std::string_view name, glm::vec4 &&vec) const {
+    glUniform4fv(glGetUniformLocation(_shader_program, name.data()), 1, glm::value_ptr(vec));
+}
+
+void shader::set_vec3(std::string_view name, glm::vec3 &&vec) const {
+    glUniform3fv(glGetUniformLocation(_shader_program, name.data()), 1, glm::value_ptr(vec));
+}
+
+void shader::set_vec2(std::string_view name, glm::vec2 &&vec) const {
+    glUniform2fv(glGetUniformLocation(_shader_program, name.data()), 1, glm::value_ptr(vec));
+}
 
 

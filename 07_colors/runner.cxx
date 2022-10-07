@@ -2,6 +2,8 @@
 // Created by 이윤상 on 2022/10/06.
 //
 
+#include <algorithm>
+#include <list>
 
 #include <fmt/core.h>
 
@@ -21,16 +23,14 @@
 
 namespace highp {
     Runner::Runner(int width, int height, const char *title,
-                   std::string_view vertex_shader_src_path_abs,
-                   std::string_view fragment_shader_src_path_abs)
+                   std::initializer_list<std::string_view> shader_paths,
+                   std::initializer_list<std::string_view> fragment_shader_paths)
             : _width(width),
               _height(height),
               _title(title),
-              _shader{std::make_unique<shader>(
-                      vertex_shader_src_path_abs,
-                      fragment_shader_src_path_abs
-              )} {
-        //
+              _shader{std::make_unique<shader>()} {
+        _vertex_shader_paths = std::move(shader_paths);
+        _fragment_shader_paths = std::move(fragment_shader_paths);
     }
 
     Runner::~Runner() {
@@ -76,7 +76,23 @@ namespace highp {
 
         opengl_status_checker::check_max_shader_attributes();
 
-        this->_shader->compile_and_link();
+        std::list<const unsigned int> vertex_shader_paths;
+        std::for_each(std::begin(_vertex_shader_paths), std::end(_vertex_shader_paths),
+                      [this, &vertex_shader_paths](auto strv) {
+                          vertex_shader_paths.push_back(_shader->compile_vertex_shader(strv.data()));
+                      });
+
+        std::list<const unsigned int> fragment_shader_paths;
+        std::for_each(std::begin(_fragment_shader_paths), std::end(_fragment_shader_paths),
+                      [this, &fragment_shader_paths](auto strv) {
+                          fragment_shader_paths.push_back(_shader->compile_fragment_shader(strv.data()));
+                      });
+
+        std::list<const unsigned int> shader_paths;
+        shader_paths.merge(vertex_shader_paths);
+        shader_paths.merge(fragment_shader_paths);
+
+        this->_shader->compile_and_link(shader_paths);
 
         constexpr const glm::vec3 cubePositions[]{
                 glm::vec3(0.0f, 0.0f, 0.0f),
@@ -157,15 +173,17 @@ namespace highp {
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
         glEnableVertexAttribArray(0);
 
-        // 2. __uv
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
-        glEnableVertexAttribArray(1);
-
         // glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         // unbind vao after so other vao calls won't modify this VAO.
         glBindVertexArray(0);
+
+        _shader->use();
+        const glm::vec3 coral_color{1.0f, 0.5f, 0.31f};
+        const glm::vec3 light_color{1, 1, 1};
+        _shader->set_vec3("object_color", const_cast<glm::vec3 &&>(coral_color));
+        _shader->set_vec3("light_color", const_cast<glm::vec3 &&>(light_color));
 
         while (!::glfwWindowShouldClose(_window)) {
 
@@ -189,7 +207,7 @@ namespace highp {
                                                     static_cast<float>(1024 / 768),
                                                     0.1f,
                                                     100.0f);
-            _shader->set_mat4("projection", proj);
+            _shader->set_mat4("projection", const_cast<glm::mat4 &&>(proj));
 
             // render boxes.
             glBindVertexArray(vao);
@@ -200,7 +218,7 @@ namespace highp {
                 model = glm::rotate(model, glm::radians(next_step_angle) * static_cast<float>(glfwGetTime()),
                                     glm::vec3{1, 0.3f, 0.5f});
 
-                _shader->set_mat4("model", model);
+                _shader->set_mat4("model", const_cast<glm::mat4 &&>(model));
 
                 glDrawArrays(GL_TRIANGLES, 0, 36);
             }
