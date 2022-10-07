@@ -23,14 +23,20 @@
 
 namespace highp {
     Runner::Runner(int width, int height, const char *title,
-                   std::initializer_list<std::string_view> shader_paths,
-                   std::initializer_list<std::string_view> fragment_shader_paths)
+                   std::string_view cube_vertex_shader_path,
+                   std::string_view cube_fragment_shader_path,
+                   std::string_view light_vertex_shader_path,
+                   std::string_view light_fragment_shader_path)
             : _width(width),
               _height(height),
               _title(title),
-              _shader{std::make_unique<shader>()} {
-        _vertex_shader_paths = std::move(shader_paths);
-        _fragment_shader_paths = std::move(fragment_shader_paths);
+              _cube_shader{std::make_unique<shader>()},
+              _light_shader{std::make_unique<shader>()},
+              _cube_vertex_shader_path{cube_vertex_shader_path},
+              _cube_fragment_shader_path{cube_fragment_shader_path},
+              _light_vertex_shader_path{light_vertex_shader_path},
+              _light_fragment_shader_path{light_fragment_shader_path} {
+        //
     }
 
     Runner::~Runner() {
@@ -76,114 +82,115 @@ namespace highp {
 
         opengl_status_checker::check_max_shader_attributes();
 
-        std::list<const unsigned int> vertex_shader_paths;
-        std::for_each(std::begin(_vertex_shader_paths), std::end(_vertex_shader_paths),
-                      [this, &vertex_shader_paths](auto strv) {
-                          vertex_shader_paths.push_back(_shader->compile_vertex_shader(strv.data()));
-                      });
+        _cube_shader->compile_and_link({
+                                               _cube_shader->compile_vertex_shader(_cube_vertex_shader_path.data()),
+                                               _cube_shader->compile_fragment_shader(_cube_fragment_shader_path.data())
+                                       });
 
-        std::list<const unsigned int> fragment_shader_paths;
-        std::for_each(std::begin(_fragment_shader_paths), std::end(_fragment_shader_paths),
-                      [this, &fragment_shader_paths](auto strv) {
-                          fragment_shader_paths.push_back(_shader->compile_fragment_shader(strv.data()));
-                      });
-
-        std::list<const unsigned int> shader_paths;
-        shader_paths.merge(vertex_shader_paths);
-        shader_paths.merge(fragment_shader_paths);
-
-        this->_shader->compile_and_link(shader_paths);
-
-        constexpr const glm::vec3 cubePositions[]{
-                glm::vec3(0.0f, 0.0f, 0.0f),
-                glm::vec3(2.0f, 5.0f, -15.0f),
-                glm::vec3(-1.5f, -2.2f, -2.5f),
-                glm::vec3(-3.8f, -2.0f, -12.3f),
-                glm::vec3(2.4f, -0.4f, -3.5f),
-                glm::vec3(-1.7f, 3.0f, -7.5f),
-                glm::vec3(1.3f, -2.0f, -2.5f),
-                glm::vec3(1.5f, 2.0f, -2.5f),
-                glm::vec3(1.5f, 0.2f, -1.5f),
-                glm::vec3(-1.3f, 1.0f, -1.5f)
-        };
+        _light_shader->compile_and_link({
+                                                _light_shader->compile_vertex_shader(_light_vertex_shader_path.data()),
+                                                _light_shader->compile_fragment_shader(
+                                                        _light_fragment_shader_path.data())
+                                        });
 
         // create and bind VBO.
         constexpr const float vertices[]{
-                // 3 - pos    // 2 - uv
-                -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
-                0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
-                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+                -0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f, -0.5f,
+                0.5f, 0.5f, -0.5f,
+                0.5f, 0.5f, -0.5f,
+                -0.5f, 0.5f, -0.5f,
+                -0.5f, -0.5f, -0.5f,
 
-                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-                0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-                0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-                0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
-                -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
-                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+                -0.5f, -0.5f, 0.5f,
+                0.5f, -0.5f, 0.5f,
+                0.5f, 0.5f, 0.5f,
+                0.5f, 0.5f, 0.5f,
+                -0.5f, 0.5f, 0.5f,
+                -0.5f, -0.5f, 0.5f,
 
-                -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-                -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-                -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+                -0.5f, 0.5f, 0.5f,
+                -0.5f, 0.5f, -0.5f,
+                -0.5f, -0.5f, -0.5f,
+                -0.5f, -0.5f, -0.5f,
+                -0.5f, -0.5f, 0.5f,
+                -0.5f, 0.5f, 0.5f,
 
-                0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-                0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+                0.5f, 0.5f, 0.5f,
+                0.5f, 0.5f, -0.5f,
+                0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f, 0.5f,
+                0.5f, 0.5f, 0.5f,
 
-                -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
-                0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
-                0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-                0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
-                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
-                -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+                -0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f, -0.5f,
+                0.5f, -0.5f, 0.5f,
+                0.5f, -0.5f, 0.5f,
+                -0.5f, -0.5f, 0.5f,
+                -0.5f, -0.5f, -0.5f,
 
-                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
-                0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
-                0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-                0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
-                -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
-                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
+                -0.5f, 0.5f, -0.5f,
+                0.5f, 0.5f, -0.5f,
+                0.5f, 0.5f, 0.5f,
+                0.5f, 0.5f, 0.5f,
+                -0.5f, 0.5f, 0.5f,
+                -0.5f, 0.5f, -0.5f,
         };
 
-        // create and bind VAO.
-        unsigned vao;
-        glGenVertexArrays(1, &vao);
 
         unsigned vbo;
         glGenBuffers(1, &vbo);
 
+        // create and bind VAO.
+        unsigned cube_vao;
+        glGenVertexArrays(1, &cube_vao);
+
+        unsigned light_vao;
+        glGenVertexArrays(1, &light_vao);
+
+#pragma region cube vao
+
         // bind the VAO first, then bind and set vertex buffer(s),
         // then configure vertex buffer(s).
-        glBindVertexArray(vao);
+        glBindVertexArray(cube_vao);
 
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo); // vbo bind.
+
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
         // linking vertex attributes.
 
-        // 1. __pos
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
         glEnableVertexAttribArray(0);
 
-        // glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0); // vbo unbind.
 
-        // unbind vao after so other vao calls won't modify this VAO.
+#pragma endregion cube vao
+
+#pragma region light vao
+
+        glBindVertexArray(light_vao);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo); // vbo bind.
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
+        glEnableVertexAttribArray(0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0); // vbo unbind.
+
+#pragma endregion light vao
+
         glBindVertexArray(0);
 
-        _shader->use();
         const glm::vec3 coral_color{1.0f, 0.5f, 0.31f};
         const glm::vec3 light_color{1, 1, 1};
-        _shader->set_vec3("object_color", const_cast<glm::vec3 &&>(coral_color));
-        _shader->set_vec3("light_color", const_cast<glm::vec3 &&>(light_color));
+
+        _light_shader->use();
+        _light_shader->set_vec3("object_color", coral_color);
+        _light_shader->set_vec3("light_color", light_color);
+
+        const glm::vec3 light_pos(1.2f, 1.0f, 2.0f);
 
         while (!::glfwWindowShouldClose(_window)) {
 
@@ -199,36 +206,37 @@ namespace highp {
             if (enable_wireframe)
                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-            _shader->use();
-
-            _shader->set_mat4("view", shared::camera::get_view_matrix());
-
             const glm::mat4 proj = glm::perspective(glm::radians(shared::camera::get_fov()),
                                                     static_cast<float>(1024 / 768),
                                                     0.1f,
                                                     100.0f);
-            _shader->set_mat4("projection", const_cast<glm::mat4 &&>(proj));
 
-            // render boxes.
-            glBindVertexArray(vao);
-            for (auto i = 0; i < 10; ++i) {
-                glm::mat4 model{1.0f};
-                model = glm::translate(model, cubePositions[i]);
-                const float next_step_angle = 20.0f * (i + 1);
-                model = glm::rotate(model, glm::radians(next_step_angle) * static_cast<float>(glfwGetTime()),
-                                    glm::vec3{1, 0.3f, 0.5f});
+            _cube_shader->use();
+            _cube_shader->set_mat4("model", glm::mat4{1.0});
+            _cube_shader->set_mat4("view", shared::camera::get_view_matrix());
+            _cube_shader->set_mat4("projection", proj);
 
-                _shader->set_mat4("model", const_cast<glm::mat4 &&>(model));
+            // render box.
+            glBindVertexArray(cube_vao);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
 
-                glDrawArrays(GL_TRIANGLES, 0, 36);
-            }
-//        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+            _light_shader->use();
+            glm::mat4 light_model{1.0f};
+            light_model = glm::translate(light_model, light_pos);
+            light_model = glm::scale(light_model, glm::vec3{0.2f});
+            _light_shader->set_mat4("model", light_model);
+            _light_shader->set_mat4("view", shared::camera::get_view_matrix());
+            _light_shader->set_mat4("projection", proj);
+
+            glBindVertexArray(light_vao);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
 
             glfwSwapBuffers(_window);
             glfwPollEvents(); // poll IO events.
         }
 
-        glDeleteVertexArrays(1, &vao);
+        glDeleteVertexArrays(1, &cube_vao);
+        glDeleteVertexArrays(1, &light_vao);
         glDeleteBuffers(1, &vbo);
 
         glfwTerminate();

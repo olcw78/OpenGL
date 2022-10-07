@@ -35,18 +35,18 @@ public:
     void set_int(std::string_view name, int value) const;
 
     // matrix
-    void set_mat4(std::string_view name, glm::mat4 &&mat) const;
+    void set_mat4(std::string_view name, glm::mat4 mat) const;
 
-    void set_mat3(std::string_view name, glm::mat3 &&mat) const;
+    void set_mat3(std::string_view name, glm::mat3 mat) const;
 
-    void set_mat2(std::string_view name, glm::mat2 &&mat) const;
+    void set_mat2(std::string_view name, glm::mat2 mat) const;
 
     // vector
-    void set_vec4(std::string_view name, glm::vec4 &&vec) const;
+    void set_vec4(std::string_view name, glm::vec4 vec) const;
 
-    void set_vec3(std::string_view name, glm::vec3 &&vec) const;
+    void set_vec3(std::string_view name, glm::vec3 vec) const;
 
-    void set_vec2(std::string_view name, glm::vec2 &&vec) const;
+    void set_vec2(std::string_view name, glm::vec2 vec) const;
 
 private:
     unsigned _shader_program;

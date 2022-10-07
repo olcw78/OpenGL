@@ -231,7 +231,7 @@ int Runner::init(bool enable_wireframe) {
 //        trans = glm::translate(trans, glm::vec3{0.2, 0.5, 0});
 //        trans = glm::rotate(trans, static_cast<float>(glfwGetTime()), glm::vec3{0.0f, 0.0f, 1.0f});
 //        trans = glm::scale(trans, glm::vec3{0.3, 0.3, 0.3});
-//        _shader->set_mat4("transform", trans);
+//        _cube_shader->set_mat4("transform", trans);
 
         glBindVertexArray(vao);
 

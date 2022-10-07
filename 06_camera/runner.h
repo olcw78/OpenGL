@@ -47,7 +47,7 @@ namespace highp {
         const char *_title;
 
         GLFWwindow *_window;
-        std::unique_ptr<shader> _shader;
+        std::unique_ptr<shader> _cube_shader;
         std::string_view _wall_texture_path;
         std::string_view _awesomeface_texture_path;
     };

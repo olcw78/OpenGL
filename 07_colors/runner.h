@@ -23,7 +23,10 @@ namespace highp {
     class Runner final {
     public:
         explicit Runner(int width, int height, const char *title,
-                        std::initializer_list<std::string_view> shader_paths);
+                        std::string_view cube_vertex_shader_path,
+                        std::string_view cube_fragment_shader_path,
+                        std::string_view light_vertex_shader_path,
+                        std::string_view light_fragment_shader_path);
 
         virtual ~Runner();
 
@@ -46,10 +49,13 @@ namespace highp {
         const char *_title;
 
         GLFWwindow *_window;
-        std::unique_ptr<shader> _shader;
+        std::unique_ptr<shader> _cube_shader;
+        std::unique_ptr<shader> _light_shader;
 
-        std::vector<std::string_view> _vertex_shader_paths;
-        std::vector<std::string_view> _fragment_shader_paths;
+        std::string_view _cube_vertex_shader_path;
+        std::string_view _cube_fragment_shader_path;
+        std::string_view _light_vertex_shader_path;
+        std::string_view _light_fragment_shader_path;
     };
 }
 

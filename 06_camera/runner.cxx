@@ -28,7 +28,7 @@ namespace highp {
             : _width(width),
               _height(height),
               _title(title),
-              _shader{std::make_unique<shader>(
+              _cube_shader{std::make_unique<shader>(
                       vertex_shader_src_path_abs,
                       fragment_shader_src_path_abs
               )},
@@ -80,7 +80,7 @@ namespace highp {
 
         opengl_status_checker::check_max_shader_attributes();
 
-        this->_shader->compile_and_link();
+        this->_cube_shader->compile_and_link();
 
         constexpr const glm::vec3 cubePositions[]{
                 glm::vec3(0.0f, 0.0f, 0.0f),
@@ -224,8 +224,8 @@ namespace highp {
         stbi_image_free(data_awesomeface);
 
         // make sure using shader _shader_program.
-        _shader->use();
-        _shader->set_int("texture_awesomeface", 0);
+        _cube_shader->use();
+        _cube_shader->set_int("texture_awesomeface", 0);
 
         // camera
         glm::vec3 camera_pos{0, 0, 3.0f};
@@ -236,7 +236,7 @@ namespace highp {
         const glm::vec3 camera_right{glm::normalize(glm::cross(world_up, camera_direction))};
         const glm::vec3 camera_up{glm::cross(camera_direction, camera_right)};
 
-        _shader->use();
+        _cube_shader->use();
 
 //    const float radius = 10.0f;
 
@@ -257,7 +257,7 @@ namespace highp {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, texture_awesomeface);
 
-            _shader->use();
+            _cube_shader->use();
 
             // camera
 //        const float cam_x = static_cast<float>(sin(glfwGetTime()) * radius);
@@ -276,13 +276,13 @@ namespace highp {
 //                            _camera_pos + _camera_front,
 //                            _camera_up)
 //        };
-            _shader->set_mat4("view", shared::camera::get_view_matrix());
+            _cube_shader->set_mat4("view", shared::camera::get_view_matrix());
 
             const glm::mat4 proj = glm::perspective(glm::radians(shared::camera::get_fov()),
                                                     static_cast<float>(1024 / 768),
                                                     0.1f,
                                                     100.0f);
-            _shader->set_mat4("projection", proj);
+            _cube_shader->set_mat4("projection", proj);
 
             // render boxes.
             glBindVertexArray(vao);
@@ -293,7 +293,7 @@ namespace highp {
                 model = glm::rotate(model, glm::radians(next_step_angle) * static_cast<float>(glfwGetTime()),
                                     glm::vec3{1, 0.3f, 0.5f});
 
-                _shader->set_mat4("model", model);
+                _cube_shader->set_mat4("model", model);
 
                 glDrawArrays(GL_TRIANGLES, 0, 36);
             }

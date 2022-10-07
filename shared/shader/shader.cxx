@@ -91,27 +91,27 @@ void shader::set_int(std::string_view name, int value) const {
     glUniform1i(glGetUniformLocation(_shader_program, name.data()), value);
 }
 
-void shader::set_mat4(std::string_view name, glm::mat4 &&mat) const {
+void shader::set_mat4(std::string_view name, glm::mat4 mat) const {
     glUniformMatrix4fv(glGetUniformLocation(_shader_program, name.data()), 1, GL_FALSE, glm::value_ptr(mat));
 }
 
-void shader::set_mat3(std::string_view name, glm::mat3 &&mat) const {
+void shader::set_mat3(std::string_view name, glm::mat3 mat) const {
     glUniformMatrix3fv(glGetUniformLocation(_shader_program, name.data()), 1, GL_FALSE, glm::value_ptr(mat));
 }
 
-void shader::set_mat2(std::string_view name, glm::mat2 &&mat) const {
+void shader::set_mat2(std::string_view name, glm::mat2 mat) const {
     glUniformMatrix2fv(glGetUniformLocation(_shader_program, name.data()), 1, GL_FALSE, glm::value_ptr(mat));
 }
 
-void shader::set_vec4(std::string_view name, glm::vec4 &&vec) const {
+void shader::set_vec4(std::string_view name, glm::vec4 vec) const {
     glUniform4fv(glGetUniformLocation(_shader_program, name.data()), 1, glm::value_ptr(vec));
 }
 
-void shader::set_vec3(std::string_view name, glm::vec3 &&vec) const {
+void shader::set_vec3(std::string_view name, glm::vec3 vec) const {
     glUniform3fv(glGetUniformLocation(_shader_program, name.data()), 1, glm::value_ptr(vec));
 }
 
-void shader::set_vec2(std::string_view name, glm::vec2 &&vec) const {
+void shader::set_vec2(std::string_view name, glm::vec2 vec) const {
     glUniform2fv(glGetUniformLocation(_shader_program, name.data()), 1, glm::value_ptr(vec));
 }
 
