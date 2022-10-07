@@ -15,23 +15,32 @@ uniform float ambient_strength = 0.1;
 uniform float specular_strength = 0.5;
 uniform float shininess = 32;
 
+struct Material {
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    float shininess;
+};
+
+uniform Material material;
+
 void main() {
-    // calculate lighting.
+    // calculate diffuse.
     vec3 n = normalize(normal);
     vec3 light_dir = normalize(light_pos - frag_pos);
 
     float diff = max(dot(n, light_dir), 0.0);
-    vec3 diffuse = diff * light_color;
+    vec3 diffuse = (diff * material.diffuse) * light_color;
 
     // calculate specular.
     vec3 view_dir = normalize(view_pos - frag_pos);
     vec3 reflect_dir = reflect(-light_dir, n);
 
-    float spec = pow(max(dot(view_dir, reflect_dir), 0.0), shininess);
-    vec3 specular = specular_strength * spec * light_color;
+    float spec = pow(max(dot(view_dir, reflect_dir), 0.0), material.shininess);
+    vec3 specular = (material.specular * spec) * light_color;
 
     // calculate ambient.
-    vec3 ambient = ambient_strength * light_color;
+    vec3 ambient = vec3(0.1) * material.ambient * light_color;
 
     // compose result.
     vec3 result = (ambient + diffuse + specular) * object_color;
