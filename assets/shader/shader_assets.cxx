@@ -80,16 +80,22 @@ namespace highp::assets::shader {
                         make_source_path("ambient lighting", "main.frag")
                 };
 
-            case e_shader_type::diffuse_light:
+            case e_shader_type::diffuse_lighting:
                 return {
                         make_source_path("diffuse lighting", "main.vert"),
                         make_source_path("diffuse lighting", "main.frag")
                 };
 
-            case e_shader_type::blinn_phong_specular_light:
+            case e_shader_type::blinn_phong_lighting:
                 return {
                         make_source_path("blinn-phong specular lighting", "main.vert"),
                         make_source_path("blinn-phong specular lighting", "main.frag"),
+                };
+
+            case e_shader_type::goraud_lighting:
+                return {
+                        make_source_path("goraud lighting", "main.vert"),
+                        make_source_path("goraud lighting", "main.frag")
                 };
         }
     }

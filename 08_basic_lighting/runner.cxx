@@ -229,9 +229,9 @@ namespace highp {
             glBindVertexArray(cube_vao);
 
             _cube_shader->set_vec3("light_pos", light_pos);
-            _cube_shader->set_float("ambient_strength", abs(sin(elapsed_time)));
-            _cube_shader->set_float("specular_strength", abs(sin(elapsed_time)));
-            _cube_shader->set_float("shininess", abs(sin(elapsed_time) * 32));
+//            _cube_shader->set_float("ambient_strength", abs(sin(elapsed_time)));
+//            _cube_shader->set_float("specular_strength", abs(sin(elapsed_time)));
+//            _cube_shader->set_float("shininess", abs(sin(elapsed_time) * 32));
 
             glm::mat4 cube_model{1.0f};
 //            cube_model = glm::rotate(cube_model, glm::radians(100.0f) * elapsed_time, glm::vec3{1, 0, 1});
