@@ -7,6 +7,7 @@
 
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
+
 #include <fmt/core.h>
 
 shader::shader(std::string_view vertex_shader_path, std::string_view fragment_shader_path)
@@ -42,22 +43,6 @@ void shader::check_error_from_result(unsigned id, bool is_compile_or_link) {
     }
 }
 
-void shader::use() {
-    glUseProgram(this->_shader_program);
-}
-
-void shader::set_bool(std::string_view name, bool value) const {
-    glUniform1i(glGetUniformLocation(_shader_program, name.data()), static_cast<int>(value));
-}
-
-void shader::set_float(std::string_view name, float value) const {
-    glUniform1f(glGetUniformLocation(_shader_program, name.data()), value);
-}
-
-void shader::set_int(std::string_view name, int value) const {
-    glUniform1i(glGetUniformLocation(_shader_program, name.data()), value);
-}
-
 void shader::compile_and_link() {
 
     // compile vertex shader.
@@ -83,6 +68,26 @@ void shader::compile_and_link() {
 
     glDeleteShader(vertex_shader);
     glDeleteShader(fragment_shader);
+}
+
+void shader::use() {
+    glUseProgram(this->_shader_program);
+}
+
+void shader::set_bool(std::string_view name, bool value) const {
+    glUniform1i(glGetUniformLocation(_shader_program, name.data()), static_cast<int>(value));
+}
+
+void shader::set_float(std::string_view name, float value) const {
+    glUniform1f(glGetUniformLocation(_shader_program, name.data()), value);
+}
+
+void shader::set_int(std::string_view name, int value) const {
+    glUniform1i(glGetUniformLocation(_shader_program, name.data()), value);
+}
+
+void shader::set_mat4(std::string_view name, glm::mat4 const& mat) const {
+    glUniformMatrix4fv(glGetUniformLocation(_shader_program, name.data()), 1, GL_FALSE, glm::value_ptr(mat));
 }
 
 

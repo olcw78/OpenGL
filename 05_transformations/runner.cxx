@@ -68,19 +68,69 @@ int Runner::init(bool enable_wireframe) {
 
     this->_shader->compile_and_link();
 
-    // create and bind VBO.
-    constexpr const float vertices[]{
-            // positions          // colors           // texture_wall coords
-            0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,   // top right
-            0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,   // bottom right
-            -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,   // bottom left
-            -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f    // top left
+    const glm::vec3 cubePositions[]{
+            glm::vec3(0.0f, 0.0f, 0.0f),
+            glm::vec3(2.0f, 5.0f, -15.0f),
+            glm::vec3(-1.5f, -2.2f, -2.5f),
+            glm::vec3(-3.8f, -2.0f, -12.3f),
+            glm::vec3(2.4f, -0.4f, -3.5f),
+            glm::vec3(-1.7f, 3.0f, -7.5f),
+            glm::vec3(1.3f, -2.0f, -2.5f),
+            glm::vec3(1.5f, 2.0f, -2.5f),
+            glm::vec3(1.5f, 0.2f, -1.5f),
+            glm::vec3(-1.3f, 1.0f, -1.5f)
     };
 
-    constexpr const unsigned indices[]{
-            0, 1, 3,
-            1, 2, 3
+    // create and bind VBO.
+    constexpr const float vertices[]{
+            // 3 - pos    // 2 - uv
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+            0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
+
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 1.0f,
+            -0.5f, 0.5f, 0.5f, 0.0f, 1.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+
+            -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+            -0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, -0.5f, -0.5f, 1.0f, 1.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 1.0f,
+
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 1.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, 0.0f, 0.0f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
     };
+
+//    constexpr const unsigned indices[]{
+//            0, 1, 3,
+//            1, 2, 3
+//    };
 
     // create and bind VAO.
     unsigned vao;
@@ -89,8 +139,8 @@ int Runner::init(bool enable_wireframe) {
     unsigned vbo;
     glGenBuffers(1, &vbo);
 
-    unsigned ebo;
-    glGenBuffers(1, &ebo);
+//    unsigned ebo;
+//    glGenBuffers(1, &ebo);
 
     // bind the VAO first, then bind and set vertex buffer(s),
     // then configure vertex buffer(s).
@@ -99,59 +149,40 @@ int Runner::init(bool enable_wireframe) {
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     // linking vertex attributes.
 
     // vertex color2
 
     // 1. __pos
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
 
     // 2. __color
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (3 * sizeof(float)));
+//    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (3 * sizeof(float)));
+//    glEnableVertexAttribArray(1);
+
+//    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (6 * sizeof(float)));
+//    glEnableVertexAttribArray(2);
+
+    // 3. __uv
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
-
     // glVertexAttribPointer registered VBO as the vertex attribute's bound vertex buffer object so afterwards we can safely unbind
-//    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     // unbind vao after so other vao calls won't modify this VAO.
-//    glBindVertexArray(0);
+    glBindVertexArray(0);
 
     // gen and bind texture 1.
     stbi_set_flip_vertically_on_load(true);
 
-    unsigned texture_wall;
-    glGenTextures(1, &texture_wall);
-    glBindTexture(GL_TEXTURE_2D, texture_wall);
-
-    // set wrapping params.
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // set texture_wall filtering params.
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
     int width;
     int height;
     int nr_channels;
-
-    const char *wall_texture_file_path = _wall_texture_path.data();
-    unsigned char *data_wall = stbi_load(wall_texture_file_path, &width, &height, &nr_channels, 0);
-
-    if (data_wall != nullptr) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data_wall);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    } else {
-        fmt::print("[error][gen texture_wall] fail to load texture_wall at {}\n", wall_texture_file_path);
-    }
-
-    stbi_image_free(data_wall);
 
     // gen and bind texture 2.
     unsigned texture_awesomeface;
@@ -180,28 +211,50 @@ int Runner::init(bool enable_wireframe) {
 
     // make sure using shader _shader_program.
     _shader->use();
-    _shader->set_int("texture_wall", 0);
-    _shader->set_int("texture_awesomeface", 1);
+    _shader->set_int("texture_awesomeface", 0);
 
     while (!glfwWindowShouldClose(_window)) {
         process_input(_window);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glEnable(GL_DEPTH_TEST);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         if (enable_wireframe)
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture_wall);
-
-        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture_awesomeface);
 
         _shader->use();
+//        glm::mat4 trans{1.0};
+//        trans = glm::translate(trans, glm::vec3{0.2, 0.5, 0});
+//        trans = glm::rotate(trans, static_cast<float>(glfwGetTime()), glm::vec3{0.0f, 0.0f, 1.0f});
+//        trans = glm::scale(trans, glm::vec3{0.3, 0.3, 0.3});
+//        _shader->set_mat4("transform", trans);
+
         glBindVertexArray(vao);
-//        glDrawArrays(GL_TRIANGLES, 0, 3);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        glm::mat4 view{1.0f};
+        view = glm::translate(view, glm::vec3{0, 0, -3.0f});
+
+        glm::mat4 proj = glm::perspective(glm::radians(75.0f), static_cast<float>(1024 / 768), 0.1f, 100.0f);
+
+        _shader->set_mat4("view", view);
+        _shader->set_mat4("projection", proj);
+
+        for (auto i = 0; i < 10; ++i) {
+            glm::mat4 model{1.0f};
+            model = glm::translate(model, cubePositions[i]);
+            const float next_step_angle = 20.0f * (i + 1);
+            model = glm::rotate(model, glm::radians(next_step_angle) * static_cast<float>(glfwGetTime()),
+                                glm::vec3{1, 0.3f, 0.5f});
+
+            _shader->set_mat4("model", model);
+
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+//        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(_window);
         glfwPollEvents(); // poll IO events.

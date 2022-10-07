@@ -55,6 +55,18 @@ namespace highp::assets::shader {
                         make_source_path("texture blending", "main.vert"),
                         make_source_path("texture blending", "main.frag")
                 };
+
+            case e_shader_type::trs:
+                return {
+                        make_source_path("trs", "main.vert"),
+                        make_source_path("trs", "main.frag")
+                };
+
+            case e_shader_type::three_d:
+                return {
+                        make_source_path("3d", "main.vert"),
+                        make_source_path("3d", "main.frag")
+                };
         }
     }
 }

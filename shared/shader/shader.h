@@ -6,6 +6,9 @@
 #define OPENGL_SHADER_H
 
 #include <string>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 class shader final {
 public:
@@ -27,6 +30,8 @@ public:
     void set_float(std::string_view name, float value) const;
 
     void set_int(std::string_view name, int value) const;
+
+    void set_mat4(std::string_view name, glm::mat4 const &mat) const;
 
 private:
     unsigned _shader_program;
