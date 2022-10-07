@@ -11,7 +11,7 @@ set(GLFW_LIB "${EXT_LIB_DIR}/GLFW/libglfw.3.dylib")
 set(GLAD2_LIB glad2)
 set(STB_IMAGE_LIB stb_image)
 set(FSTREAM_GUARD_LIB fstream_guard)
-set(SHADER_LIB shader opengl_status_checker)
+set(SHADER_LIB shader opengl_status_checker camera)
 set(ASSET_LIB assets)
 
 # lib collection

@@ -1,3 +1,5 @@
+add_subdirectory(macros)
 add_subdirectory(fstream_guard)
 add_subdirectory(shader)
 add_subdirectory(opengl_status_checker)
+add_subdirectory(camera)
