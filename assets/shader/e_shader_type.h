@@ -16,7 +16,9 @@ namespace highp::assets::shader {
         texture_blending,
         trs,
         three_d,
-        constant_light
+        constant_light,
+        light_ambient_only,
+        diffuse_light
     };
 }
 

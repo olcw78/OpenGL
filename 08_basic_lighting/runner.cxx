@@ -95,47 +95,47 @@ namespace highp {
 
         // create and bind VBO.
         constexpr const float vertices[]{
-                -0.5f, -0.5f, -0.5f,
-                0.5f, -0.5f, -0.5f,
-                0.5f, 0.5f, -0.5f,
-                0.5f, 0.5f, -0.5f,
-                -0.5f, 0.5f, -0.5f,
-                -0.5f, -0.5f, -0.5f,
+                -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+                0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+                0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+                0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+                -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+                -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
 
-                -0.5f, -0.5f, 0.5f,
-                0.5f, -0.5f, 0.5f,
-                0.5f, 0.5f, 0.5f,
-                0.5f, 0.5f, 0.5f,
-                -0.5f, 0.5f, 0.5f,
-                -0.5f, -0.5f, 0.5f,
+                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+                0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+                0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+                0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+                -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
 
-                -0.5f, 0.5f, 0.5f,
-                -0.5f, 0.5f, -0.5f,
-                -0.5f, -0.5f, -0.5f,
-                -0.5f, -0.5f, -0.5f,
-                -0.5f, -0.5f, 0.5f,
-                -0.5f, 0.5f, 0.5f,
+                -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
+                -0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+                -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+                -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+                -0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
+                -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
 
-                0.5f, 0.5f, 0.5f,
-                0.5f, 0.5f, -0.5f,
-                0.5f, -0.5f, -0.5f,
-                0.5f, -0.5f, -0.5f,
-                0.5f, -0.5f, 0.5f,
-                0.5f, 0.5f, 0.5f,
+                0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+                0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+                0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+                0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+                0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+                0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
 
-                -0.5f, -0.5f, -0.5f,
-                0.5f, -0.5f, -0.5f,
-                0.5f, -0.5f, 0.5f,
-                0.5f, -0.5f, 0.5f,
-                -0.5f, -0.5f, 0.5f,
-                -0.5f, -0.5f, -0.5f,
+                -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+                0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+                0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
+                0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
+                -0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
+                -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
 
-                -0.5f, 0.5f, -0.5f,
-                0.5f, 0.5f, -0.5f,
-                0.5f, 0.5f, 0.5f,
-                0.5f, 0.5f, 0.5f,
-                -0.5f, 0.5f, 0.5f,
-                -0.5f, 0.5f, -0.5f,
+                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+                0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+                0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+                0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+                -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f
         };
 
 
@@ -161,8 +161,11 @@ namespace highp {
 
         // linking vertex attributes.
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0);
         glEnableVertexAttribArray(0);
+
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) (3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0); // vbo unbind.
 
@@ -174,7 +177,7 @@ namespace highp {
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo); // vbo bind.
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0);
         glEnableVertexAttribArray(0);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0); // vbo unbind.
@@ -186,20 +189,19 @@ namespace highp {
         const glm::vec3 coral_color{1.0f, 0.5f, 0.31f};
         const glm::vec3 light_color{1, 1, 1};
 
-        _light_shader->use();
-        _light_shader->set_vec3("object_color", coral_color);
-        _light_shader->set_vec3("light_color", light_color);
+        _cube_shader->use();
+        _cube_shader->set_vec3("object_color", coral_color);
+        _cube_shader->set_vec3("light_color", light_color);
 
-        const glm::vec3 light_pos(1.2f, 1.0f, 2.0f);
+        glm::vec3 light_pos(1.2f, 5.0f, 2.0f);
 
-        while (!::glfwWindowShouldClose(_window)) {
+        while (!glfwWindowShouldClose(_window)) {
 
             // calculate delta time.
             shared::time::tick(glfwGetTime);
 
             process_input(_window);
 
-//            glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClearColor(0, 0, 0, 0);
             glEnable(GL_DEPTH_TEST);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -212,24 +214,42 @@ namespace highp {
                                                     0.1f,
                                                     100.0f);
 
+            const float elapsed_time = static_cast<float>(glfwGetTime());
+
+            light_pos = glm::vec3{
+                    -2.0f * sin(elapsed_time),
+                    0,
+                    -1.5f * cos(elapsed_time)
+            };
+
             _cube_shader->use();
-            _cube_shader->set_mat4("model", glm::mat4{1.0});
-            _cube_shader->set_mat4("view", shared::camera::get_view_matrix());
-            _cube_shader->set_mat4("projection", proj);
 
             // render box.
             glBindVertexArray(cube_vao);
+
+            _cube_shader->set_vec3("light_pos", light_pos);
+
+            glm::mat4 cube_model{1.0f};
+            cube_model = glm::rotate(cube_model, glm::radians(100.0f) * elapsed_time, glm::vec3{1, 0, 1});
+            _cube_shader->set_mat4("model", glm::transpose(glm::inverse(cube_model)));
+            _cube_shader->set_mat4("view", shared::camera::get_view_matrix());
+            _cube_shader->set_mat4("projection", proj);
+
             glDrawArrays(GL_TRIANGLES, 0, 36);
 
             _light_shader->use();
+            glBindVertexArray(light_vao);
+
             glm::mat4 light_model{1.0f};
+
             light_model = glm::translate(light_model, light_pos);
+            light_model = glm::rotate(light_model, glm::radians(80.0f) * elapsed_time, glm::vec3{0, 1, 0});
             light_model = glm::scale(light_model, glm::vec3{0.2f});
+
             _light_shader->set_mat4("model", light_model);
             _light_shader->set_mat4("view", shared::camera::get_view_matrix());
             _light_shader->set_mat4("projection", proj);
 
-            glBindVertexArray(light_vao);
             glDrawArrays(GL_TRIANGLES, 0, 36);
 
             glfwSwapBuffers(_window);

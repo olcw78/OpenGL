@@ -73,6 +73,18 @@ namespace highp::assets::shader {
                         make_source_path("constant light", "main.vert"),
                         make_source_path("constant light", "main.frag")
                 };
+
+            case e_shader_type::light_ambient_only:
+                return {
+                        make_source_path("ambient lighting", "main.vert"),
+                        make_source_path("ambient lighting", "main.frag")
+                };
+
+            case e_shader_type::diffuse_light:
+                return {
+                        make_source_path("diffuse lighting", "main.vert"),
+                        make_source_path("diffuse lighting", "main.frag")
+                };
         }
     }
 }
