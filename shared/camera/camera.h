@@ -23,7 +23,7 @@ namespace highp::shared {
     public:
         static glm::mat4 get_view_matrix();
 
-        static void on_update(GLFWwindow *window, float dt);
+        static void on_update(GLFWwindow *window);
 
         static void on_update_mouse(GLFWwindow *window, double x, double y);
 

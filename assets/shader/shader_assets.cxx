@@ -67,6 +67,12 @@ namespace highp::assets::shader {
                         make_source_path("3d", "main.vert"),
                         make_source_path("3d", "main.frag")
                 };
+
+            case e_shader_type::constant_light:
+                return {
+                        make_source_path("constant light", "main.vert"),
+                        make_source_path("constant light", "main.frag")
+                };
         }
     }
 }

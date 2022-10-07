@@ -21,9 +21,7 @@ namespace highp {
     public:
         explicit Runner(int width, int height, const char *title,
                         std::string_view vertex_shader_src_path_abs,
-                        std::string_view fragment_shader_src_path_abs,
-                        std::string_view wall_texture_path_abs,
-                        std::string_view awesomeface_texture_path_abs
+                        std::string_view fragment_shader_src_path_abs
         );
 
         virtual ~Runner();
@@ -48,8 +46,6 @@ namespace highp {
 
         GLFWwindow *_window;
         std::unique_ptr<shader> _shader;
-        std::string_view _wall_texture_path;
-        std::string_view _awesomeface_texture_path;
     };
 }
 

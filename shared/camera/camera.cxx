@@ -3,6 +3,7 @@
 //
 
 #include "camera.h"
+#include "time/time.h"
 
 #include <glad/gl.h>
 #include <GLFW/glfw3.h>
@@ -36,8 +37,8 @@ namespace highp::shared {
         );
     }
 
-    void camera::on_update(GLFWwindow *window, float dt) {
-        const float final_camera_speed = camera::camera_speed * dt;
+    void camera::on_update(GLFWwindow *window) {
+        const float final_camera_speed = camera::camera_speed * shared::time::get_delta_time();
 
         // move forward
         if (::glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {

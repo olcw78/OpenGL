@@ -11,8 +11,10 @@ set(GLFW_LIB "${EXT_LIB_DIR}/GLFW/libglfw.3.dylib")
 set(GLAD2_LIB glad2)
 set(STB_IMAGE_LIB stb_image)
 set(FSTREAM_GUARD_LIB fstream_guard)
-set(SHADER_LIB shader opengl_status_checker camera)
+set(SHADER_LIB shader opengl_status_checker)
 set(ASSET_LIB assets)
+set(CAMERA_LIB camera)
+set(TIME_LIB time)
 
 # lib collection
 set(GL_LIB
@@ -23,4 +25,6 @@ set(UTIL_LIBS
         ${FMT_LIB}
         ${FSTREAM_GUARD_LIB}
         ${SHADER_LIB}
-        ${ASSET_LIB})
+        ${ASSET_LIB}
+        ${CAMERA_LIB}
+        ${TIME_LIB})

@@ -15,7 +15,8 @@ namespace highp::assets::shader {
         texture_mapping_vertex_color_tinted,
         texture_blending,
         trs,
-        three_d
+        three_d,
+        constant_light
     };
 }
 

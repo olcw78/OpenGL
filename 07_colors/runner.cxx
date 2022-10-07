@@ -22,18 +22,14 @@
 namespace highp {
     Runner::Runner(int width, int height, const char *title,
                    std::string_view vertex_shader_src_path_abs,
-                   std::string_view fragment_shader_src_path_abs,
-                   std::string_view wall_texture_path_abs,
-                   std::string_view awesomeface_texture_path_abs)
+                   std::string_view fragment_shader_src_path_abs)
             : _width(width),
               _height(height),
               _title(title),
               _shader{std::make_unique<shader>(
                       vertex_shader_src_path_abs,
                       fragment_shader_src_path_abs
-              )},
-              _wall_texture_path{wall_texture_path_abs},
-              _awesomeface_texture_path{awesomeface_texture_path_abs} {
+              )} {
         //
     }
 
@@ -141,20 +137,12 @@ namespace highp {
                 -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
         };
 
-//    constexpr const unsigned indices[]{
-//            0, 1, 3,
-//            1, 2, 3
-//    };
-
         // create and bind VAO.
         unsigned vao;
         glGenVertexArrays(1, &vao);
 
         unsigned vbo;
         glGenBuffers(1, &vbo);
-
-//    unsigned ebo;
-//    glGenBuffers(1, &ebo);
 
         // bind the VAO first, then bind and set vertex buffer(s),
         // then configure vertex buffer(s).
@@ -163,25 +151,13 @@ namespace highp {
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
         // linking vertex attributes.
-
-        // vertex color2
 
         // 1. __pos
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
         glEnableVertexAttribArray(0);
 
-        // 2. __color
-//    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (3 * sizeof(float)));
-//    glEnableVertexAttribArray(1);
-
-//    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) (6 * sizeof(float)));
-//    glEnableVertexAttribArray(2);
-
-        // 3. __uv
+        // 2. __uv
         glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
         glEnableVertexAttribArray(1);
 
@@ -190,55 +166,6 @@ namespace highp {
 
         // unbind vao after so other vao calls won't modify this VAO.
         glBindVertexArray(0);
-
-        // gen and bind texture 1.
-        stbi_set_flip_vertically_on_load(true);
-
-        int width;
-        int height;
-        int nr_channels;
-
-        // gen and bind texture 2.
-        unsigned texture_awesomeface;
-        glGenTextures(1, &texture_awesomeface);
-        glBindTexture(GL_TEXTURE_2D, texture_awesomeface);
-
-        // set wrapping params.
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        // set texture_wall filtering params.
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-        const char *awesomeface_texture_file_path = _awesomeface_texture_path.data();
-        unsigned char *data_awesomeface = stbi_load(awesomeface_texture_file_path, &width, &height, &nr_channels, 0);
-
-        if (data_awesomeface != nullptr) {
-            // awesome face image has transparency thus make sure using alpha channel on loading it.
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data_awesomeface);
-            glGenerateMipmap(GL_TEXTURE_2D);
-        } else {
-            fmt::print("[error][gen texture_wall] fail to load texture_wall at {}\n", awesomeface_texture_file_path);
-        }
-
-        stbi_image_free(data_awesomeface);
-
-        // make sure using shader _shader_program.
-        _shader->use();
-        _shader->set_int("texture_awesomeface", 0);
-
-        // camera
-        glm::vec3 camera_pos{0, 0, 3.0f};
-        const glm::vec3 camera_target{0, 0, 0};
-        const glm::vec3 camera_direction{glm::normalize(camera_pos - camera_target)};
-
-        const glm::vec3 world_up{0, 1, 0};
-        const glm::vec3 camera_right{glm::normalize(glm::cross(world_up, camera_direction))};
-        const glm::vec3 camera_up{glm::cross(camera_direction, camera_right)};
-
-        _shader->use();
-
-//    const float radius = 10.0f;
 
         while (!::glfwWindowShouldClose(_window)) {
 
@@ -254,28 +181,8 @@ namespace highp {
             if (enable_wireframe)
                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, texture_awesomeface);
-
             _shader->use();
 
-            // camera
-//        const float cam_x = static_cast<float>(sin(glfwGetTime()) * radius);
-//        const float cam_z = static_cast<float>(cos(glfwGetTime()) * radius);
-//        fmt::print("cam_x: {}, cam_z: {}\n", cam_x, cam_z);
-
-//        const glm::mat4 view{glm::lookAt(
-//                glm::vec3{cam_x, 0, cam_z},
-//                glm::vec3{0, 0, 0},
-//                world_up
-//        )};
-
-
-//        const glm::mat4 view{
-//                glm::lookAt(_camera_pos,
-//                            _camera_pos + _camera_front,
-//                            _camera_up)
-//        };
             _shader->set_mat4("view", shared::camera::get_view_matrix());
 
             const glm::mat4 proj = glm::perspective(glm::radians(shared::camera::get_fov()),
@@ -305,7 +212,6 @@ namespace highp {
 
         glDeleteVertexArrays(1, &vao);
         glDeleteBuffers(1, &vbo);
-//    glDeleteBuffers(1, &ebo);
 
         glfwTerminate();
 
