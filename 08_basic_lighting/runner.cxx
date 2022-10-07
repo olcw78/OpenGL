@@ -193,6 +193,7 @@ namespace highp {
         _cube_shader->set_vec3("object_color", coral_color);
         _cube_shader->set_vec3("light_color", light_color);
 
+
         glm::vec3 light_pos(1.2f, 5.0f, 2.0f);
 
         while (!glfwWindowShouldClose(_window)) {
@@ -228,12 +229,17 @@ namespace highp {
             glBindVertexArray(cube_vao);
 
             _cube_shader->set_vec3("light_pos", light_pos);
+            _cube_shader->set_float("ambient_strength", abs(sin(elapsed_time)));
+            _cube_shader->set_float("specular_strength", abs(sin(elapsed_time)));
+            _cube_shader->set_float("shininess", abs(sin(elapsed_time) * 32));
 
             glm::mat4 cube_model{1.0f};
-            cube_model = glm::rotate(cube_model, glm::radians(100.0f) * elapsed_time, glm::vec3{1, 0, 1});
+//            cube_model = glm::rotate(cube_model, glm::radians(100.0f) * elapsed_time, glm::vec3{1, 0, 1});
             _cube_shader->set_mat4("model", glm::transpose(glm::inverse(cube_model)));
             _cube_shader->set_mat4("view", shared::camera::get_view_matrix());
             _cube_shader->set_mat4("projection", proj);
+
+            _cube_shader->set_vec3("view_pos", shared::camera::get_camera_pos());
 
             glDrawArrays(GL_TRIANGLES, 0, 36);
 

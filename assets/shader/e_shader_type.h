@@ -18,7 +18,8 @@ namespace highp::assets::shader {
         three_d,
         constant_light,
         light_ambient_only,
-        diffuse_light
+        diffuse_light,
+        blinn_phong_specular_light
     };
 }
 

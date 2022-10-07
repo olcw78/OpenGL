@@ -44,6 +44,10 @@ namespace highp::shared {
 
         static void set_sensitivity(float new_sensitivity);
 
+        static glm::vec3 const &get_camera_pos();
+
+        static void set_camera_pos(glm::vec3 new_camera_pos);
+
 #pragma endregion accessor
 
 #pragma region field
@@ -53,7 +57,7 @@ namespace highp::shared {
         static float fov;
         static float camera_speed;
 
-        static glm::vec3 _camera_pos;
+        static glm::vec3 camera_pos;
         static glm::vec3 _camera_up;
         static glm::vec3 _camera_front;
 

@@ -24,15 +24,15 @@ namespace highp::shared {
     bool camera::_first_mouse = true;
 
     glm::vec3 camera::_camera_front = {0, 0, -1};
-    glm::vec3 camera::_camera_pos = {0, 0, 3};
+    glm::vec3 camera::camera_pos = {0, 0, 3};
     glm::vec3 camera::_camera_up = {0, 1, 0};
 
 #pragma endregion field
 
     glm::mat4 camera::get_view_matrix() {
         return glm::lookAt(
-                camera::_camera_pos,
-                camera::_camera_pos + camera::_camera_front,
+                camera::camera_pos,
+                camera::camera_pos + camera::_camera_front,
                 camera::_camera_up
         );
     }
@@ -42,22 +42,22 @@ namespace highp::shared {
 
         // move forward
         if (::glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-            _camera_pos += final_camera_speed * _camera_front;
+            camera_pos += final_camera_speed * _camera_front;
         }
 
         // move backward
         if (::glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-            _camera_pos -= final_camera_speed * _camera_front;
+            camera_pos -= final_camera_speed * _camera_front;
         }
 
         // move to the left
         if (::glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-            _camera_pos -= final_camera_speed * glm::normalize(glm::cross(_camera_front, _camera_up));
+            camera_pos -= final_camera_speed * glm::normalize(glm::cross(_camera_front, _camera_up));
         }
 
         // move to the right
         if (::glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-            _camera_pos += final_camera_speed * glm::normalize(glm::cross(_camera_front, _camera_up));
+            camera_pos += final_camera_speed * glm::normalize(glm::cross(_camera_front, _camera_up));
         }
     }
 
@@ -128,6 +128,14 @@ namespace highp::shared {
 
     float camera::get_camera_speed() {
         return camera::camera_speed;
+    }
+
+    glm::vec3 const &camera::get_camera_pos() {
+        return camera::camera_pos;
+    }
+
+    void camera::set_camera_pos(glm::vec3 new_camera_pos) {
+        camera::camera_pos = new_camera_pos;
     }
 
 #pragma endregion accessor
