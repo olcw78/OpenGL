@@ -121,6 +121,12 @@ namespace highp::assets::shader {
                         make_source_path("spot light", "main.vert"),
                         make_source_path("spot light", "main.frag")
                 };
+
+            case e_shader_asset_type::multiple_lights:
+                return {
+                        make_source_path("multiple lights", "main.vert"),
+                        make_source_path("multiple lights", "main.frag"),
+                };
         }
     }
 }

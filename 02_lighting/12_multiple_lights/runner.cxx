@@ -33,6 +33,13 @@ namespace highp {
             {-1.3f, 1.0f,  -1.5}
     };
 
+    constexpr const glm::vec3 point_lights_positions[]{
+            {0.7f,  0.2f,  2.0f},
+            {2.3f,  -3.3f, -4.0f},
+            {-4.0f, 2.0f,  -12.0f},
+            {0.0f,  0.0f,  -3.0}
+    };
+
     constexpr static const float vertices[]{
             // positions          // normals           // texture coords
             -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
@@ -83,6 +90,8 @@ namespace highp {
                    const char *title,
                    std::string_view cube_vertex_shader_path,
                    std::string_view cube_fragment_shader_path,
+                   std::string_view light_vertex_shader_path,
+                   std::string_view light_fragment_shader_path,
                    std::string_view wooden_box_diffuse_tex_path,
                    std::string_view wooden_box_specular_tex_path)
             : _width(width),
@@ -92,6 +101,9 @@ namespace highp {
               _title(title),
               _window{nullptr},
               _cube_shader{std::make_unique<shared::shader>()},
+              _light_shader{std::make_unique<shared::shader>()},
+              _light_vertex_shader_path{light_vertex_shader_path},
+              _light_fragment_shader_path{light_fragment_shader_path},
               _cube_vertex_shader_path{cube_vertex_shader_path},
               _cube_fragment_shader_path{cube_fragment_shader_path},
               _wooden_box_diffuse_tex_path{wooden_box_diffuse_tex_path},
@@ -146,22 +158,29 @@ namespace highp {
                 }
         );
 
-#pragma region cube vbo
+        _light_shader->compile_and_link(
+                {
+                        _light_shader->compile_vertex_shader(_light_vertex_shader_path.data()),
+                        _light_shader->compile_fragment_shader(_light_fragment_shader_path.data())
+                }
+        );
+
+        // create and bind VBO.
+        unsigned vbo;
+        glGenBuffers(1, &vbo);
 
         // create and bind VAO.
         unsigned cube_vao;
         glGenVertexArrays(1, &cube_vao);
 
-        // create and bind VBO.
-        unsigned vbo;
-        glGenBuffers(1, &vbo);
+        unsigned light_vao;
+        glGenVertexArrays(1, &light_vao);
 
         // bind the VAO first, then bind and set vertex buffer(s),
         // then configure vertex buffer(s).
         glBindVertexArray(cube_vao);
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo); // vbo bind.
-
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
         // linking vertex attributes.
@@ -184,9 +203,16 @@ namespace highp {
 
         glBindBuffer(GL_ARRAY_BUFFER, 0); // vbo unbind.
 
-#pragma endregion cube vbo
+        glBindVertexArray(light_vao);
+        glBindBuffer(GL_ARRAY_BUFFER, vbo); // vbo bind.
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, cube_vertex_attrib_size, reinterpret_cast<void *>(0));
+        glEnableVertexAttribArray(0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, 0); // vbo unbind.
 
         glBindVertexArray(0);
+
 
 #pragma region texture
 
@@ -227,21 +253,39 @@ namespace highp {
 
         _cube_shader->set_int("material.diffuse", 0);
         _cube_shader->set_int("material.specular", 1);
-
         _cube_shader->set_float("material.shininess", 64.0f);
 
-//        glm::vec3 light_pos{0.0, };
+        // directional light shader parameters
+        _cube_shader->set_vec3("dir_light.direction", {-0.2f, -0.3f, -1.0f});
 
-        _cube_shader->set_vec3("light.ambient", {0.02f, 0.02f, 0.02f});
-        _cube_shader->set_vec3("light.diffuse", {0.7f, 0.7f, 0.7f});
-        _cube_shader->set_vec3("light.specular", {1.0f, 1.0f, 1.0f});
+        _cube_shader->set_vec3("dir_light.ambient", {0.02f, 0.02f, 0.02f});
+        _cube_shader->set_vec3("dir_light.diffuse", {0.2f, 0.2f, 0.2f});
+        _cube_shader->set_vec3("dir_light.specular", {1.0f, 1.0f, 1.0f});
 
-        _cube_shader->set_float("light.constant", 1.0f);
-        _cube_shader->set_float("light.linear", 0.09f);
-        _cube_shader->set_float("light.quadratic", 0.032f);
+        // point light shader parameters
+        for (auto i = 0; i < 4; ++i) {
+            _cube_shader->set_vec3(fmt::format("point_lights[{}].position", i), point_lights_positions[i]);
 
-        _cube_shader->set_float("light.cutoff", glm::cos(glm::radians(12.5f)));
-        _cube_shader->set_float("light.outer_cutoff", glm::cos(glm::radians(17.5f)));
+            _cube_shader->set_float(fmt::format("point_lights[{}].constant", i), 1.0f);
+            _cube_shader->set_float(fmt::format("point_lights[{}].linear", i), 0.09f);
+            _cube_shader->set_float(fmt::format("point_lights[{}].quadratic", i), 0.032f);
+
+            _cube_shader->set_vec3(fmt::format("point_lights[{}].ambient", i), {0.02f, 0.02f, 0.02f});
+            _cube_shader->set_vec3(fmt::format("point_lights[{}].diffuse", i), {0.7f, 0.7f, 0.7f});
+            _cube_shader->set_vec3(fmt::format("point_lights[{}].specular", i), {1.0f, 1.0f, 1.0f});
+        }
+
+        // spot light shader parameters
+        _cube_shader->set_vec3("spot_light.ambient", {0.2f, 0.2f, 0.2f});
+        _cube_shader->set_vec3("spot_light.diffuse", {1.2f, 1.2f, 1.2f});
+        _cube_shader->set_vec3("spot_light.specular", {3.0f, 3.0f, 3.0f});
+
+        _cube_shader->set_float("spot_light.inner_cutoff", glm::cos(glm::radians(12.5f)));
+        _cube_shader->set_float("spot_light.outer_cutoff", glm::cos(glm::radians(17.5f)));
+
+        _cube_shader->set_float("spot_light.constant", 1.0f);
+        _cube_shader->set_float("spot_light.linear", 0.09f);
+        _cube_shader->set_float("spot_light.quadratic", 0.032f);
 
         while (!glfwWindowShouldClose(_window)) {
 
@@ -259,19 +303,28 @@ namespace highp {
 
             const auto elapsed_time = static_cast<float>(glfwGetTime());
 
-            // set cube shader params
-            _cube_shader->use();
-
-            _cube_shader->set_mat4("view", shared::camera::get_view_matrix());
-            _cube_shader->set_vec3("light.dir", shared::camera::get_camera_front());
-            _cube_shader->set_vec3("light.pos", shared::camera::get_camera_pos());
 
             const glm::mat4 proj = glm::perspective(glm::radians(shared::camera::get_fov()),
                                                     static_cast<float>(_width) / static_cast<float>(_height),
                                                     _near,
                                                     _far);
-            _cube_shader->set_mat4("projection", proj);
+
+//            light_pos = {
+//                    -2.0f * sin(elapsed_time),
+//                    0,
+//                    -1.5f * cos(elapsed_time)
+//            };
+
+            // draw cubes.
+            _cube_shader->use();
+
+            _cube_shader->set_vec3("spot_light.position", shared::camera::get_camera_pos());
+            _cube_shader->set_vec3("spot_light.direction", shared::camera::get_camera_front());
+
             _cube_shader->set_vec3("view_pos", shared::camera::get_camera_pos());
+
+            _cube_shader->set_mat4("view", shared::camera::get_view_matrix());
+            _cube_shader->set_mat4("projection", proj);
 
             glBindVertexArray(cube_vao);
 
@@ -282,7 +335,7 @@ namespace highp {
             glActiveTexture(GL_TEXTURE1);
             glBindTexture(GL_TEXTURE_2D, wooden_box_specular_tex);
 
-            for (auto i = 0; i < 10; ++i) {
+            for (auto i = 0; i < sizeof(cube_positions) / sizeof(glm::vec3); ++i) {
                 const float next_step_angle = 5.0f * (i + 1) * elapsed_time;
 
                 glm::mat4 cube_model{1.0f};
@@ -294,11 +347,28 @@ namespace highp {
                 glDrawArrays(GL_TRIANGLES, 0, 36);
             }
 
+            // draw lights.
+            _light_shader->use();
+            _light_shader->set_mat4("view", shared::camera::get_view_matrix());
+            _light_shader->set_mat4("projection", proj);
+
+            glBindVertexArray(light_vao);
+
+            for (auto i = 0; i < sizeof(point_lights_positions) / sizeof(glm::vec3); ++i) {
+                glm::mat4 model{1.0f};
+                model = glm::translate(model, point_lights_positions[i]);
+                model = glm::scale(model, {0.2f, 0.2f, 0.2f});
+                _light_shader->set_mat4("model", model);
+
+                glDrawArrays(GL_TRIANGLES, 0, 36);
+            }
+
             glfwSwapBuffers(_window);
             glfwPollEvents(); // poll IO events.
         }
 
         glDeleteVertexArrays(1, &cube_vao);
+        glDeleteVertexArrays(1, &light_vao);
         glDeleteBuffers(1, &vbo);
 
         glfwTerminate();

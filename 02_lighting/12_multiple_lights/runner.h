@@ -27,6 +27,8 @@ namespace highp {
                         const char *title,
                         std::string_view cube_vertex_shader_path,
                         std::string_view cube_fragment_shader_path,
+                        std::string_view light_vertex_shader_path,
+                        std::string_view light_fragment_shader_path,
                         std::string_view wooden_box_diffuse_tex_path,
                         std::string_view wooden_box_specular_tex_path);
 
@@ -54,9 +56,13 @@ namespace highp {
 
         GLFWwindow *_window;
         std::unique_ptr<shared::shader> _cube_shader;
+        std::unique_ptr<shared::shader> _light_shader;
 
         std::string_view _cube_vertex_shader_path;
         std::string_view _cube_fragment_shader_path;
+
+        std::string_view _light_vertex_shader_path;
+        std::string_view _light_fragment_shader_path;
 
         std::string_view _wooden_box_diffuse_tex_path;
         std::string_view _wooden_box_specular_tex_path;

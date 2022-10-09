@@ -24,7 +24,8 @@ namespace highp::assets::shader {
         goraud_lighting,
         directional_light,
         point_light,
-        spot_light
+        spot_light,
+        multiple_lights
     };
 }
 
