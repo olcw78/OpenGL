@@ -22,6 +22,9 @@ namespace highp::assets::shader {
         diffuse_lighting,
         blinn_phong_lighting,
         goraud_lighting,
+        directional_light,
+        point_light,
+        spot_light
     };
 }
 

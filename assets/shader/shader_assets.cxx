@@ -103,6 +103,24 @@ namespace highp::assets::shader {
                         make_source_path("goraud lighting", "main.vert"),
                         make_source_path("goraud lighting", "main.frag")
                 };
+
+            case e_shader_asset_type::directional_light:
+                return {
+                        make_source_path("directional light", "main.vert"),
+                        make_source_path("directional light", "main.frag")
+                };
+
+            case e_shader_asset_type::point_light:
+                return {
+                        make_source_path("point light", "main.vert"),
+                        make_source_path("point light", "main.frag")
+                };
+
+            case e_shader_asset_type::spot_light:
+                return {
+                        make_source_path("spot light", "main.vert"),
+                        make_source_path("spot light", "main.frag")
+                };
         }
     }
 }

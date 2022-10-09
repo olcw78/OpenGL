@@ -5,22 +5,22 @@ in vec3 normal;
 in vec3 frag_pos;
 in vec2 uv;
 
-struct Material {
+uniform struct Material {
     sampler2D diffuse;
     sampler2D specular;
     float shininess;
-};
+} material;
 
-struct Light {
+uniform struct Light {
     vec3 pos;
 
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
-};
+} light;
 
-uniform Material material;
-uniform Light light;
+//uniform Material material;
+//uniform Light light;
 uniform vec3 view_pos;
 
 void main() {
