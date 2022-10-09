@@ -273,7 +273,7 @@ namespace highp {
 
 //        const glm::mat4 view{
 //                glm::lookAt(camera_pos,
-//                            camera_pos + _camera_front,
+//                            camera_pos + camera_front,
 //                            _camera_up)
 //        };
             _cube_shader->set_mat4("view", shared::camera::get_view_matrix());

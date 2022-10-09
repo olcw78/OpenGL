@@ -230,15 +230,18 @@ namespace highp {
 
         _cube_shader->set_float("material.shininess", 64.0f);
 
-        glm::vec3 light_pos{0.0};
+//        glm::vec3 light_pos{0.0, };
 
-        _cube_shader->set_vec3("light.ambient", {0.35f, 0.35f, 0.35f});
+        _cube_shader->set_vec3("light.ambient", {0.02f, 0.02f, 0.02f});
         _cube_shader->set_vec3("light.diffuse", {0.7f, 0.7f, 0.7f});
         _cube_shader->set_vec3("light.specular", {1.0f, 1.0f, 1.0f});
 
         _cube_shader->set_float("light.constant", 1.0f);
         _cube_shader->set_float("light.linear", 0.09f);
-        _cube_shader->set_float("light.quadrant", 0.032f);
+        _cube_shader->set_float("light.quadratic", 0.032f);
+
+        _cube_shader->set_float("light.cutoff", glm::cos(glm::radians(12.5f)));
+        _cube_shader->set_float("light.outer_cutoff", glm::cos(glm::radians(17.5f)));
 
         while (!glfwWindowShouldClose(_window)) {
 
@@ -260,7 +263,8 @@ namespace highp {
             _cube_shader->use();
 
             _cube_shader->set_mat4("view", shared::camera::get_view_matrix());
-            _cube_shader->set_vec3("light.pos", {5 * sin(5.0f * elapsed_time), 0.0f, 5 * cos(5.0f * elapsed_time)});
+            _cube_shader->set_vec3("light.dir", shared::camera::get_camera_front());
+            _cube_shader->set_vec3("light.pos", shared::camera::get_camera_pos());
 
             const glm::mat4 proj = glm::perspective(glm::radians(shared::camera::get_fov()),
                                                     static_cast<float>(_width) / static_cast<float>(_height),

@@ -5,7 +5,7 @@ using namespace highp::assets::shader;
 using namespace highp::assets::texture;
 
 int main() {
-    auto const &shader_paths = get_shader_paths(e_shader_asset_type::point_light);
+    auto const &shader_paths = get_shader_paths(e_shader_asset_type::spot_light);
 
     std::string const &diffuse_tex_src = wooden_box_diffuse_tex_src;
     std::string const &specular_tex_src = wooden_box_specular_tex_src;

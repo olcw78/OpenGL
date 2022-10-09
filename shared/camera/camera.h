@@ -48,6 +48,8 @@ namespace highp::shared {
 
         static void set_camera_pos(glm::vec3 new_camera_pos);
 
+        static glm::vec3 const &get_camera_front();
+
 #pragma endregion accessor
 
 #pragma region field
@@ -59,7 +61,7 @@ namespace highp::shared {
 
         static glm::vec3 camera_pos;
         static glm::vec3 _camera_up;
-        static glm::vec3 _camera_front;
+        static glm::vec3 camera_front;
 
         static bool _first_mouse;
 
