@@ -14,7 +14,7 @@ int main() {
     auto runner = highp::Runner(
             1920, 1080,
             0.1f, 100.0f,
-            "12. multiple lights",
+            "13. import imgui",
             shader_paths1[0],
             shader_paths1[1],
             shader_paths2[0],

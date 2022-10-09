@@ -4,6 +4,7 @@ set(EXT_INC_DIR "${PROJECT_SOURCE_DIR}/external/inc")
 set(SHARED_INC_DIR "${PROJECT_SOURCE_DIR}/shared")
 set(ASSET_INC_DIR "${PROJECT_SOURCE_DIR}/assets")
 set(GLM_INC_DIR "${CMAKE_INSTALL_PREFIX}/include")
+set(IMGUI_INC_DIR "${PROJECT_SOURCE_DIR}/external/imgui")
 
 # lib
 set(FMT_LIB "${EXT_LIB_DIR}/fmt/libfmt.9.1.0.dylib")
@@ -16,6 +17,7 @@ set(ASSET_LIB assets)
 set(CAMERA_LIB camera)
 set(TIME_LIB time)
 set(TEXTURE_LIB texture)
+set(IMGUI_LIB imgui)
 
 # lib collection
 set(GL_LIB

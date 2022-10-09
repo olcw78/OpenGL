@@ -11,6 +11,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <imgui.h>
+
 #include "runner.h"
 
 #include "opengl_status_checker/opengl_status_checker.h"
@@ -18,6 +20,8 @@
 #include "camera/camera.h"
 #include "time/time.h"
 #include "texture/texture.h"
+#include "backends/imgui_impl_glfw.h"
+#include "backends/imgui_impl_opengl3.h"
 
 namespace highp {
     constexpr const glm::vec3 cube_positions[]{
@@ -149,6 +153,18 @@ namespace highp {
 
         glfwSetScrollCallback(_window, Runner::on_receive_scroll_event);
 
+        // init IMGUI.
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
+        ImGuiIO &io = ImGui::GetIO();
+
+        // set up platform / renderer bindings.
+        ImGui_ImplGlfw_InitForOpenGL(_window, true);
+        ImGui_ImplOpenGL3_Init("#version 410");
+
+        ImGui::StyleColorsDark();
+
+        // compile and link shaders.
         opengl_status_checker::check_max_shader_attributes();
 
         _cube_shader->compile_and_link(
@@ -301,6 +317,20 @@ namespace highp {
             if (enable_wireframe)
                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+            // feed inputs to dear IMGUI, start new frame.
+            ImGui_ImplOpenGL3_NewFrame();
+            ImGui_ImplGlfw_NewFrame();
+            ImGui::NewFrame();
+
+            // Render GUI.
+            ImGui::Begin("Demo Window");
+            ImGui::Button("Hello!");
+            ImGui::End();
+
+            // Render dear IMGUI into screen.
+            ImGui::Render();
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
             const auto elapsed_time = static_cast<float>(glfwGetTime());
 
 
@@ -371,6 +401,10 @@ namespace highp {
         glDeleteVertexArrays(1, &light_vao);
         glDeleteBuffers(1, &vbo);
 
+        ImGui_ImplOpenGL3_Shutdown();
+        ImGui_ImplGlfw_Shutdown();
+        ImGui::DestroyContext();
+
         glfwTerminate();
 
         return 0;
@@ -386,14 +420,14 @@ namespace highp {
             glfwSetWindowShouldClose(window, true);
         }
 
-        shared::camera::on_update(window);
+//        shared::camera::on_update(window);
     }
 
     void Runner::on_receive_mouse_event_impl(GLFWwindow *window, double x, double y) {
-        shared::camera::on_update_mouse(window, x, y);
+//        shared::camera::on_update_mouse(window, x, y);
     }
 
     void Runner::on_receive_scroll_event(GLFWwindow *window, double x, double y) {
-        shared::camera::on_update_scroll(window, x, y);
+//        shared::camera::on_update_scroll(window, x, y);
     }
 }

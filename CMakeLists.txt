@@ -16,4 +16,5 @@ add_subdirectory(assets)
 
 # projects
 #add_subdirectory(01_basic)
-add_subdirectory(02_lighting)
+#add_subdirectory(02_lighting)
+add_subdirectory(03_ui)
