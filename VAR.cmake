@@ -15,6 +15,7 @@ set(SHADER_LIB shader opengl_status_checker)
 set(ASSET_LIB assets)
 set(CAMERA_LIB camera)
 set(TIME_LIB time)
+set(TEXTURE_LIB texture)
 
 # lib collection
 set(GL_LIB
@@ -27,4 +28,5 @@ set(UTIL_LIBS
         ${SHADER_LIB}
         ${ASSET_LIB}
         ${CAMERA_LIB}
-        ${TIME_LIB})
+        ${TIME_LIB}
+        ${TEXTURE_LIB})

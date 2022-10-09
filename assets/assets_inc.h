@@ -5,7 +5,7 @@
 #ifndef OPENGL_ASSETS_INC_H
 #define OPENGL_ASSETS_INC_H
 
-#include "shader/e_shader_type.h"
+#include "shader/e_shader_asset_type.h"
 #include "shader/shader_assets.h"
 #include "texture/texture_assets.h"
 

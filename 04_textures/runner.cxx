@@ -19,10 +19,9 @@ Runner::Runner(int width, int height, const char *title,
         : _width(width),
           _height(height),
           _title(title),
-          _shader{std::make_unique<shader>(
-                  vertex_shader_src_path_abs,
-                  fragment_shader_src_path_abs
-          )},
+          _shader{std::make_unique<shader>()},
+          _vertex_shader_src_path{vertex_shader_src_path_abs},
+          _fragment_shader_src_path{fragment_shader_src_path_abs},
           _wall_texture_path{wall_texture_path_abs},
           _awesomeface_texture_path{awesomeface_texture_path_abs} {
     //
@@ -63,7 +62,10 @@ int Runner::init(bool enable_wireframe) {
 
     opengl_status_checker::check_max_shader_attributes();
 
-    this->_shader->compile_and_link();
+    _shader->compile_and_link({
+                                      _shader->compile_vertex_shader(_vertex_shader_src_path.data()),
+                                      _shader->compile_fragment_shader(_fragment_shader_src_path.data())
+                              });
 
     // create and bind VBO.
     constexpr const float vertices[]{
@@ -162,7 +164,7 @@ int Runner::init(bool enable_wireframe) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    const char *awesomeface_texture_file_path = _awesomeface_texture_path.data();
+    const char *awesomeface_texture_file_path = ;
     unsigned char *data_awesomeface = stbi_load(awesomeface_texture_file_path, &width, &height, &nr_channels, 0);
 
     if (data_awesomeface != nullptr) {
@@ -197,7 +199,6 @@ int Runner::init(bool enable_wireframe) {
 
         _shader->use();
         glBindVertexArray(vao);
-//        glDrawArrays(GL_TRIANGLES, 0, 3);
         glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
         glfwSwapBuffers(_window);

@@ -15,6 +15,8 @@ namespace highp::assets::texture {
 
     extern std::string wall_tex_src;
     extern std::string awesomeface_tex_src;
+    extern std::string wooden_box_diffuse_tex_src;
+    extern std::string wooden_box_specular_tex_src;
 }
 
 

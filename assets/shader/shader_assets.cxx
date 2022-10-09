@@ -12,87 +12,93 @@ namespace highp::assets::shader {
         return fmt::format(FMT_STRING("{}{}/{}"), shader_dir_prefix, dir_name, shader_name);
     }
 
-    shader_paths get_shader_paths(e_shader_type shader_type) {
-        switch (shader_type) {
-            case e_shader_type::constant_color:
+    shader_paths get_shader_paths(e_shader_asset_type shader_asset_type) {
+        switch (shader_asset_type) {
+            case e_shader_asset_type::constant_color:
                 return {
                         make_source_path("constant color", "main.vert"),
                         make_source_path("constant color", "main.frag")
                 };
 
-            case e_shader_type::vertex_color:
+            case e_shader_asset_type::vertex_color:
                 return {
                         make_source_path("vertex color", "main.vert"),
                         make_source_path("vertex color", "main.frag")
                 };
 
-            case e_shader_type::uniform:
+            case e_shader_asset_type::uniform:
                 return {
                         make_source_path("uniform", "main.vert"),
                         make_source_path("uniform", "main.frag")
                 };
 
-            case e_shader_type::fixed_vertex_color:
+            case e_shader_asset_type::fixed_vertex_color:
                 return {
                         make_source_path("fixed vertex color", "main.vert"),
                         make_source_path("fixed vertex color", "main.frag")
                 };
 
-            case e_shader_type::texture_mapping:
+            case e_shader_asset_type::texture_mapping:
                 return {
                         make_source_path("texture mapping", "main.vert"),
                         make_source_path("texture mapping", "main.frag")
                 };
 
-            case e_shader_type::texture_mapping_vertex_color_tinted:
+            case e_shader_asset_type::texture_mapping_vertex_color_tinted:
                 return {
                         make_source_path("texture mapping vertex color tinted", "main.vert"),
                         make_source_path("texture mapping vertex color tinted", "main.frag")
                 };
 
-            case e_shader_type::texture_blending:
+            case e_shader_asset_type::texture_mapping_lighting:
+                return {
+                        make_source_path("texture mapping lighting", "main.vert"),
+                        make_source_path("texture mapping lighting", "main.frag")
+                };
+
+            case e_shader_asset_type::texture_blending:
                 return {
                         make_source_path("texture blending", "main.vert"),
                         make_source_path("texture blending", "main.frag")
                 };
 
-            case e_shader_type::trs:
+            case e_shader_asset_type::trs:
                 return {
                         make_source_path("trs", "main.vert"),
                         make_source_path("trs", "main.frag")
                 };
 
-            case e_shader_type::three_d:
+            case e_shader_asset_type::three_d:
                 return {
                         make_source_path("3d", "main.vert"),
                         make_source_path("3d", "main.frag")
                 };
 
-            case e_shader_type::constant_light:
+            case e_shader_asset_type::constant_light:
                 return {
                         make_source_path("constant light", "main.vert"),
                         make_source_path("constant light", "main.frag")
                 };
 
-            case e_shader_type::light_ambient_only:
+            case e_shader_asset_type::light_ambient_only:
                 return {
                         make_source_path("ambient lighting", "main.vert"),
                         make_source_path("ambient lighting", "main.frag")
                 };
 
-            case e_shader_type::diffuse_lighting:
+            case e_shader_asset_type::diffuse_lighting:
                 return {
                         make_source_path("diffuse lighting", "main.vert"),
                         make_source_path("diffuse lighting", "main.frag")
                 };
 
-            case e_shader_type::blinn_phong_lighting:
+            case e_shader_asset_type::blinn_phong_lighting:
                 return {
                         make_source_path("blinn-phong specular lighting", "main.vert"),
                         make_source_path("blinn-phong specular lighting", "main.frag"),
                 };
 
-            case e_shader_type::goraud_lighting:
+            case e_shader_asset_type::goraud_lighting:
                 return {
                         make_source_path("goraud lighting", "main.vert"),
                         make_source_path("goraud lighting", "main.frag")

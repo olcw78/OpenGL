@@ -2,7 +2,7 @@ set(TARGET assets)
 add_library(${TARGET} STATIC
         texture/texture_assets.h
         texture/texture_assets.cxx
-        shader/e_shader_type.h
+        shader/e_shader_asset_type.h
         shader/shader_assets.h
         shader/shader_assets.cxx
         assets_inc.h)
