@@ -1,0 +1,6 @@
+add_subdirectory(07_colors)
+add_subdirectory(08_basic_lighting)
+add_subdirectory(09_materials)
+add_subdirectory(10_lighting_maps)
+add_subdirectory(11_light_casters)
+add_subdirectory(12_multiple_lights)

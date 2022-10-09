@@ -4,9 +4,9 @@
 
 #include "runner.h"
 
-#include <glad/gl.h>
-#include <GLFW/glfw3.h>
-#include <fmt/core.h>
+#include "glad/gl.h"
+#include "GLFW/glfw3.h"
+#include "fmt/core.h"
 
 
 int Runner::init(int width, int height, const char *title) {

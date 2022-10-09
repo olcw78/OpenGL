@@ -1,6 +1,6 @@
 #include "runner.h"
 
-#include <fmt/format.h>
+#include "fmt/format.h"
 #include "assets_inc.h"
 
 using namespace highp::assets::shader;

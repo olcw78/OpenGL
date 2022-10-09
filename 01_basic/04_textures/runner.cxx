@@ -4,9 +4,9 @@
 
 #include "runner.h"
 
-#include <glad/gl.h>
-#include <GLFW/glfw3.h>
-#include <fmt/core.h>
+#include "glad/gl.h"
+#include "GLFW/glfw3.h"
+#include "fmt/core.h"
 
 #include "opengl_status_checker/opengl_status_checker.h"
 #include "stb/stb_image.h"

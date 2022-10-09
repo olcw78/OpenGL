@@ -5,10 +5,10 @@
 #include <algorithm>
 #include <list>
 
-#include <fmt/core.h>
+#include "fmt/core.h"
 
-#include <glad/gl.h>
-#include <GLFW/glfw3.h>
+#include "glad/gl.h"
+#include "GLFW/glfw3.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -22,6 +22,50 @@
 #include "time/time.h"
 
 namespace highp {
+    constexpr static const float vertices[]{
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+            0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+            0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+            0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
+
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+            0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+            0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+            0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+            -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
+
+            -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
+            -0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
+            -0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
+
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+            0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
+
+            -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+            0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
+            0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
+            -0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
+            -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
+
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+            0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+            -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
+            -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f
+    };
+
     Runner::Runner(int width, int height, const char *title,
                    std::string_view cube_vertex_shader_path,
                    std::string_view cube_fragment_shader_path,
@@ -36,7 +80,6 @@ namespace highp {
               _cube_fragment_shader_path{cube_fragment_shader_path},
               _light_vertex_shader_path{light_vertex_shader_path},
               _light_fragment_shader_path{light_fragment_shader_path} {
-        //
     }
 
     Runner::~Runner() {
@@ -71,13 +114,10 @@ namespace highp {
         glViewport(0, 0, _width, _height);
 
         glfwSetFramebufferSizeCallback(_window, Runner::on_resize_frame_buffer);
+
         glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
-//    const on_receive_mouse_event event = std::bind(&Runner::on_receive_mouse_event_impl, this, std::placeholders::_1,
-//                                                   std::placeholders::_2, std::placeholders::_3);
-
-
         glfwSetCursorPosCallback(_window, Runner::on_receive_mouse_event_impl);
+
         glfwSetScrollCallback(_window, Runner::on_receive_scroll_event);
 
         opengl_status_checker::check_max_shader_attributes();
@@ -94,50 +134,6 @@ namespace highp {
                                         });
 
         // create and bind VBO.
-        constexpr const float vertices[]{
-                -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-                0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-                0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-                0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-                -0.5f, 0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-                -0.5f, -0.5f, -0.5f, 0.0f, 0.0f, -1.0f,
-
-                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-                0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-                0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-                0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-                -0.5f, 0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-                -0.5f, -0.5f, 0.5f, 0.0f, 0.0f, 1.0f,
-
-                -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
-                -0.5f, 0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-                -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-                -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f,
-                -0.5f, -0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
-                -0.5f, 0.5f, 0.5f, -1.0f, 0.0f, 0.0f,
-
-                0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-                0.5f, 0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-                0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-                0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,
-                0.5f, -0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-                0.5f, 0.5f, 0.5f, 1.0f, 0.0f, 0.0f,
-
-                -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
-                0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
-                0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
-                0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
-                -0.5f, -0.5f, 0.5f, 0.0f, -1.0f, 0.0f,
-                -0.5f, -0.5f, -0.5f, 0.0f, -1.0f, 0.0f,
-
-                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-                0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f,
-                0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
-                0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
-                -0.5f, 0.5f, 0.5f, 0.0f, 1.0f, 0.0f,
-                -0.5f, 0.5f, -0.5f, 0.0f, 1.0f, 0.0f
-        };
-
 
         unsigned vbo;
         glGenBuffers(1, &vbo);
@@ -193,8 +189,12 @@ namespace highp {
         _cube_shader->set_vec3("object_color", coral_color);
         _cube_shader->set_vec3("light_color", light_color);
 
-
         glm::vec3 light_pos(1.2f, 5.0f, 2.0f);
+
+        _cube_shader->set_vec3("material.ambient", {0.2f, 0.2f, 0.2f});
+        _cube_shader->set_vec3("material.diffuse", {0.5f, 0.5f, 0.5f});
+        _cube_shader->set_vec3("material.specular", {1.0f, 1.0f, 1.0f});
+        _cube_shader->set_float("material.shininess", 32.0f);
 
         while (!glfwWindowShouldClose(_window)) {
 
@@ -216,8 +216,7 @@ namespace highp {
                                                     100.0f);
 
             const float elapsed_time = static_cast<float>(glfwGetTime());
-
-            light_pos = glm::vec3{
+            light_pos = {
                     -2.0f * sin(elapsed_time),
                     0,
                     -1.5f * cos(elapsed_time)
@@ -229,12 +228,8 @@ namespace highp {
             glBindVertexArray(cube_vao);
 
             _cube_shader->set_vec3("light_pos", light_pos);
-//            _cube_shader->set_float("ambient_strength", abs(sin(elapsed_time)));
-//            _cube_shader->set_float("specular_strength", abs(sin(elapsed_time)));
-//            _cube_shader->set_float("shininess", abs(sin(elapsed_time) * 32));
 
             glm::mat4 cube_model{1.0f};
-//            cube_model = glm::rotate(cube_model, glm::radians(100.0f) * elapsed_time, glm::vec3{1, 0, 1});
             _cube_shader->set_mat4("model", glm::transpose(glm::inverse(cube_model)));
             _cube_shader->set_mat4("view", shared::camera::get_view_matrix());
             _cube_shader->set_mat4("projection", proj);
