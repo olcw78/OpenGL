@@ -92,10 +92,10 @@ namespace highp {
               _far{far},
               _title(title),
               _window{nullptr},
-              _texture_mapping_shader{std::make_unique<shared::shader>()},
-              _texture_mapping_vertex_shader_path{vertex_shader_path},
-              _texture_mapping_fragment_shader_path{fragment_shader_path},
-              _diffuse_tex_path{diffuse_tex_path} {
+              _box_shader{std::make_unique<shared::shader>()},
+              _box_vertex_shader_path{vertex_shader_path},
+              _box_fragment_shader_path{fragment_shader_path},
+              _grass_tex_path{diffuse_tex_path} {
         //
     }
 
@@ -156,10 +156,10 @@ namespace highp {
         // compile and link shaders.
         opengl_status_checker::check_max_shader_attributes();
 
-        _texture_mapping_shader->compile_and_link(
+        _box_shader->compile_and_link(
                 {
-                        _texture_mapping_shader->compile_vertex_shader(_texture_mapping_vertex_shader_path.data()),
-                        _texture_mapping_shader->compile_fragment_shader(_texture_mapping_fragment_shader_path.data())
+                        _box_shader->compile_vertex_shader(_box_vertex_shader_path.data()),
+                        _box_shader->compile_fragment_shader(_box_fragment_shader_path.data())
                 }
         );
 
@@ -219,7 +219,7 @@ namespace highp {
 
         // wooden box diffuse
         const unsigned diffuse_tex = shared::texture::load_texture_2d(
-                _diffuse_tex_path.data(),
+                _grass_tex_path.data(),
                 {
                         std::make_pair(GL_TEXTURE_WRAP_S, GL_REPEAT),
                         std::make_pair(GL_TEXTURE_WRAP_T, GL_REPEAT)
@@ -234,8 +234,8 @@ namespace highp {
 
 #pragma endregion texture
 
-        _texture_mapping_shader->use();
-        _texture_mapping_shader->set_int("tex", 0);
+        _box_shader->use();
+        _box_shader->set_int("tex", 0);
 
         while (!glfwWindowShouldClose(_window)) {
 
@@ -258,10 +258,10 @@ namespace highp {
                                                     _far);
 
             // draw cubes.
-            _texture_mapping_shader->use();
+            _box_shader->use();
 
-            _texture_mapping_shader->set_mat4("view", shared::camera::get_view_matrix());
-            _texture_mapping_shader->set_mat4("projection", proj);
+            _box_shader->set_mat4("view", shared::camera::get_view_matrix());
+            _box_shader->set_mat4("projection", proj);
 
             glBindVertexArray(cube_vao);
 
@@ -271,12 +271,12 @@ namespace highp {
 
             glm::mat4 cube_model{1.0f};
             cube_model = glm::translate(cube_model, {-1.0f, 0.0f, -1.0f});
-            _texture_mapping_shader->set_mat4("model", cube_model);
+            _box_shader->set_mat4("model", cube_model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
 
             cube_model = glm::mat4{1.0f};
             cube_model = glm::translate(cube_model, {2.0f, 0.0f, 0.0f});
-            _texture_mapping_shader->set_mat4("model", cube_model);
+            _box_shader->set_mat4("model", cube_model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
 
             glBindVertexArray(plane_vao);
@@ -284,7 +284,7 @@ namespace highp {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, diffuse_tex);
 
-            _texture_mapping_shader->set_mat4("model", glm::mat4{1.0f});
+            _box_shader->set_mat4("model", glm::mat4{1.0f});
 
             glDrawArrays(GL_TRIANGLES, 0, 36);
 

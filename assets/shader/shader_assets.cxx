@@ -139,6 +139,12 @@ namespace highp::assets::shader {
                         make_source_path("depth visualizing", "main.vert"),
                         make_source_path("depth visualizing", "main.frag")
                 };
+
+            case e_shader_asset_type::alpha_cutout:
+                return {
+                        make_source_path("alpha cutout", "main.vert"),
+                        make_source_path("alpha cutout", "main.frag")
+                };
         }
     }
 }

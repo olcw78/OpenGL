@@ -16,4 +16,6 @@ namespace highp::assets::texture {
     std::string awesomeface_tex_src = make_source_path("awesomeface.png");
     std::string wooden_box_diffuse_tex_src = make_source_path("wooden_box/diffuse.png");
     std::string wooden_box_specular_tex_src = make_source_path("wooden_box/specular.png");
+    std::string grass_tex_src = make_source_path("grass.png");
+    std::string blending_transparent_window_tex_src = make_source_path("blending_transparent_window.png");
 }

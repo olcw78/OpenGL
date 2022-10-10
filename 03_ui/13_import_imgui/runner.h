@@ -55,16 +55,16 @@ namespace highp {
         const char *_title;
 
         GLFWwindow *_window;
-        std::unique_ptr<shared::shader> _texture_mapping_shader;
+        std::unique_ptr<shared::shader> _box_shader;
         std::unique_ptr<shared::shader> _light_shader;
 
-        std::string_view _texture_mapping_vertex_shader_path;
-        std::string_view _texture_mapping_fragment_shader_path;
+        std::string_view _box_vertex_shader_path;
+        std::string_view _box_fragment_shader_path;
 
         std::string_view _light_vertex_shader_path;
         std::string_view _light_fragment_shader_path;
 
-        std::string_view _diffuse_tex_path;
+        std::string_view _grass_tex_path;
         std::string_view _wooden_box_specular_tex_path;
     };
 }

@@ -25,11 +25,12 @@ namespace highp {
         explicit Runner(int width, int height,
                         float near, float far,
                         const char *title,
-                        std::string_view texture_mapping_vertex_shader_path,
-                        std::string_view texture_mapping_fragment_shader_path,
-                        std::string_view single_color_vertex_shader_path,
-                        std::string_view single_color_fragment_shader_path,
-                        std::string_view diffuse_tex_path);
+                        std::string_view box_vertex_shader_path,
+                        std::string_view box_fragment_shader_path,
+                        std::string_view grass_vertex_shader_path,
+                        std::string_view grass_fragment_shader_path,
+                        std::string_view box_diffuse_tex_path,
+                        std::string_view grass_tex_path);
 
         virtual ~Runner();
 
@@ -56,14 +57,15 @@ namespace highp {
         GLFWwindow *_window;
 
         std::unique_ptr<shared::shader> _box_shader;
-        std::unique_ptr<shared::shader> _single_color_shader;
+        std::unique_ptr<shared::shader> _grass_shader;
 
         std::string_view _box_vertex_shader_path;
         std::string_view _box_fragment_shader_path;
 
-        std::string_view _single_color_vertex_shader_path;
-        std::string_view _single_color_fragment_shader_path;
+        std::string_view _grass_vertex_shader_path;
+        std::string_view _grass_fragment_shader_path;
 
+        std::string_view _box_diffuse_tex_path;
         std::string_view _grass_tex_path;
     };
 }
