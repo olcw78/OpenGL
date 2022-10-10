@@ -25,8 +25,8 @@ namespace highp {
         explicit Runner(int width, int height,
                         float near, float far,
                         const char *title,
-                        std::string_view vertex_shader_path,
-                        std::string_view fragment_shader_path,
+                        std::string_view texture_mapping_vertex_shader_path,
+                        std::string_view texture_mapping_fragment_shader_path,
                         std::string_view diffuse_tex_path);
 
         virtual ~Runner();
@@ -53,10 +53,10 @@ namespace highp {
 
         GLFWwindow *_window;
 
-        std::unique_ptr<shared::shader> _shader;
+        std::unique_ptr<shared::shader> _texture_mapping_shader;
 
-        std::string_view _vertex_shader_path;
-        std::string_view _fragment_shader_path;
+        std::string_view _texture_mapping_vertex_shader_path;
+        std::string_view _texture_mapping_fragment_shader_path;
 
         std::string_view _diffuse_tex_path;
     };

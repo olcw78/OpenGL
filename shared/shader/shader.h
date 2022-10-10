@@ -18,17 +18,18 @@ namespace highp::shared {
         ~shader();
 
     public:
-        void use();
+        static unsigned compile_vertex_shader(const char *src);
 
-        unsigned compile_vertex_shader(const char *src) const;
+        static unsigned compile_fragment_shader(const char *src);
 
-        unsigned compile_fragment_shader(const char *src) const;
+        static void validate_shader_compilation(unsigned shader_id, e_shader_type shader_type);
 
+        static void validate_shader_linkage(unsigned program_id);
+
+    public:
         void compile_and_link(std::list<const unsigned> const &shaders);
 
-        void validate_shader_compilation(unsigned shader_id, e_shader_type shader_type) const;
-
-        void validate_shader_linkage(unsigned program_id) const;
+        void use();
 
     public:
         // primitive

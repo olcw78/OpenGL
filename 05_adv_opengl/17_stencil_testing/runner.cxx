@@ -83,8 +83,10 @@ namespace highp {
     Runner::Runner(int width, int height,
                    float near, float far,
                    const char *title,
-                   std::string_view vertex_shader_path,
-                   std::string_view fragment_shader_path,
+                   std::string_view texture_mapping_vertex_shader_path,
+                   std::string_view texture_mapping_fragment_shader_path,
+                   std::string_view single_color_vertex_shader_path,
+                   std::string_view single_color_fragment_shader_path,
                    std::string_view diffuse_tex_path)
             : _width(width),
               _height(height),
@@ -93,8 +95,11 @@ namespace highp {
               _title(title),
               _window{nullptr},
               _texture_mapping_shader{std::make_unique<shared::shader>()},
-              _texture_mapping_vertex_shader_path{vertex_shader_path},
-              _texture_mapping_fragment_shader_path{fragment_shader_path},
+              _single_color_shader{std::make_unique<shared::shader>()},
+              _texture_mapping_vertex_shader_path{texture_mapping_vertex_shader_path},
+              _texture_mapping_fragment_shader_path{texture_mapping_fragment_shader_path},
+              _single_color_vertex_shader_path{single_color_vertex_shader_path},
+              _single_color_fragment_shader_path{single_color_fragment_shader_path},
               _diffuse_tex_path{diffuse_tex_path} {
         //
     }
@@ -138,7 +143,7 @@ namespace highp {
         glfwSetScrollCallback(_window, Runner::on_receive_scroll_event);
 
         // https://learnopengl.com/Advanced-OpenGL/Depth-testing
-        glEnable(GL_DEPTH_TEST);
+//        glEnable(GL_DEPTH_TEST);
 
         // depth test functions.
         // glDepthFunc(GL_ALWAYS); // depth test always passes.
@@ -153,13 +158,25 @@ namespace highp {
         //glDepthFunc(GL_NOTEQUAL);
         // glDepthFunc(GL_GEQUAL);
 
+        // https://learnopengl.com/Advanced-OpenGL/Stencil-testing
+//        glEnable(GL_STENCIL_TEST);
+
+
+
         // compile and link shaders.
         opengl_status_checker::check_max_shader_attributes();
 
         _texture_mapping_shader->compile_and_link(
                 {
-                        _texture_mapping_shader->compile_vertex_shader(_texture_mapping_vertex_shader_path.data()),
-                        _texture_mapping_shader->compile_fragment_shader(_texture_mapping_fragment_shader_path.data())
+                        shared::shader::compile_vertex_shader(_texture_mapping_vertex_shader_path.data()),
+                        shared::shader::compile_fragment_shader(_texture_mapping_fragment_shader_path.data())
+                }
+        );
+
+        _single_color_shader->compile_and_link(
+                {
+                        shared::shader::compile_vertex_shader(_single_color_vertex_shader_path.data()),
+                        shared::shader::compile_fragment_shader(_single_color_fragment_shader_path.data())
                 }
         );
 
@@ -182,8 +199,8 @@ namespace highp {
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
 
-//        glEnableVertexAttribArray(1);
-//        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
 
         glBindBuffer(GL_ARRAY_BUFFER, 0); // vbo unbind.
         glBindVertexArray(0);
@@ -207,8 +224,8 @@ namespace highp {
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
 
-//        glEnableVertexAttribArray(1);
-//        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
 
         glBindBuffer(GL_ARRAY_BUFFER, 0); // vbo unbind.
         glBindVertexArray(0);
@@ -246,8 +263,16 @@ namespace highp {
 
             glClearColor(0, 0, 0, 0);
 
+            glEnable(GL_DEPTH_TEST);
+            glEnable(GL_STENCIL_TEST);
+
+            glStencilFunc(GL_ALWAYS, 1, 0xFF);
+            glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
             // glDepthMask(GL_FALSE); - disable writing depth buffer.
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+
+            glStencilMask(0x00); // each bit ends up as 0 in the stencil buffer (disabling writes).
 
             if (enable_wireframe)
                 glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -257,19 +282,34 @@ namespace highp {
                                                     _near,
                                                     _far);
 
-            // draw cubes.
-            _texture_mapping_shader->use();
+#pragma region draw objects with texture
+            glm::mat4 cube_model{1.0f};
 
+            _texture_mapping_shader->use();
             _texture_mapping_shader->set_mat4("view", shared::camera::get_view_matrix());
             _texture_mapping_shader->set_mat4("projection", proj);
 
-            glBindVertexArray(cube_vao);
+            // draw plane with texture
+            glBindVertexArray(plane_vao);
 
-            // active diffuse / specular textures.
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, diffuse_tex);
 
-            glm::mat4 cube_model{1.0f};
+            _texture_mapping_shader->set_mat4("model", glm::mat4{1.0f});
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+
+            glBindVertexArray(0);
+
+            // always pass stencil test so the outline is always drawn on the plane.
+            glStencilFunc(GL_ALWAYS, 1, 0xFF);
+            glStencilMask(0xFF);
+
+            // draw boxes with texture
+            glBindVertexArray(cube_vao);
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, diffuse_tex);
+
             cube_model = glm::translate(cube_model, {-1.0f, 0.0f, -1.0f});
             _texture_mapping_shader->set_mat4("model", cube_model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -279,14 +319,45 @@ namespace highp {
             _texture_mapping_shader->set_mat4("model", cube_model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
 
-            glBindVertexArray(plane_vao);
+            glBindVertexArray(0);
 
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, diffuse_tex);
+#pragma endregion draw objects with texture
 
-            _texture_mapping_shader->set_mat4("model", glm::mat4{1.0f});
+#pragma region draw single colors
 
+            // draw single color boxes
+            glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+            glStencilMask(0x00);
+
+            glDisable(GL_DEPTH_TEST);
+
+            _single_color_shader->use();
+
+            _single_color_shader->set_mat4("view", shared::camera::get_view_matrix());
+            _single_color_shader->set_mat4("projection", proj);
+
+            glBindVertexArray(cube_vao);
+
+            cube_model = glm::mat4{1.0f};
+            cube_model = glm::translate(cube_model, {-1.0f, 0.0f, -1.0f});
+            cube_model = glm::scale(cube_model, {1.05f, 1.05f, 1.05f});
+            _single_color_shader->set_mat4("model", cube_model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
+
+            cube_model = glm::mat4{1.0f};
+            cube_model = glm::translate(cube_model, {2.0f, 0.0f, 0.0f});
+            cube_model = glm::scale(cube_model, {1.05f, 1.05f, 1.05f});
+            _single_color_shader->set_mat4("model", cube_model);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+
+            glBindVertexArray(0);
+
+            glStencilMask(0xFF);
+            glStencilFunc(GL_ALWAYS, 1, 0xFF);
+
+            glEnable(GL_DEPTH_TEST);
+
+#pragma endregion draw single colors
 
             glfwSwapBuffers(_window);
             glfwPollEvents(); // poll IO events.

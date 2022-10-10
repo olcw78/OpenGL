@@ -26,7 +26,8 @@ namespace highp::assets::shader {
         point_light,
         spot_light,
         multiple_lights,
-        depth_visualizing
+        depth_visualizing,
+        single_color
     };
 }
 

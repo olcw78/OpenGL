@@ -1,1 +1,2 @@
 add_subdirectory(16_depth_testing)
+add_subdirectory(17_stencil_testing)

@@ -20,8 +20,7 @@ namespace highp::shared {
         glDeleteProgram(_shader_program);
     }
 
-    void
-    shader::validate_shader_compilation(unsigned shader_id, e_shader_type shader_type) const {
+    void shader::validate_shader_compilation(unsigned shader_id, e_shader_type shader_type) {
         glGetShaderiv(shader_id, GL_COMPILE_STATUS, &shader::is_success);
 
         if (!shader::is_success) {
@@ -53,8 +52,7 @@ namespace highp::shared {
         }
     }
 
-    void
-    shader::validate_shader_linkage(unsigned int program_id) const {
+    void shader::validate_shader_linkage(unsigned int program_id) {
         glGetProgramiv(program_id, GL_LINK_STATUS, &shader::is_success);
 
         if (!shader::is_success) {
@@ -63,7 +61,7 @@ namespace highp::shared {
         }
     }
 
-    unsigned shader::compile_vertex_shader(const char *src) const {
+    unsigned shader::compile_vertex_shader(const char *src) {
         const std::string as_str{fstream_guard()(src)};
         const char *shader_src = as_str.c_str();
 
@@ -75,7 +73,7 @@ namespace highp::shared {
         return vertex_shader;
     }
 
-    unsigned shader::compile_fragment_shader(const char *src) const {
+    unsigned shader::compile_fragment_shader(const char *src) {
         const std::string as_str{fstream_guard()(src)};
         const char *shader_src = as_str.c_str();
 

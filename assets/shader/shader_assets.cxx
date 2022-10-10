@@ -80,6 +80,12 @@ namespace highp::assets::shader {
                         make_source_path("constant light", "main.frag")
                 };
 
+            case e_shader_asset_type::single_color:
+                return {
+                        make_source_path("constant light", "main.vert"),
+                        make_source_path("single color", "main.frag")
+                };
+
             case e_shader_asset_type::light_ambient_only:
                 return {
                         make_source_path("ambient lighting", "main.vert"),

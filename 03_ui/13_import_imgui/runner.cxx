@@ -104,12 +104,12 @@ namespace highp {
               _far{far},
               _title(title),
               _window{nullptr},
-              _shader{std::make_unique<shared::shader>()},
+              _texture_mapping_shader{std::make_unique<shared::shader>()},
               _light_shader{std::make_unique<shared::shader>()},
               _light_vertex_shader_path{light_vertex_shader_path},
               _light_fragment_shader_path{light_fragment_shader_path},
-              _vertex_shader_path{cube_vertex_shader_path},
-              _fragment_shader_path{cube_fragment_shader_path},
+              _texture_mapping_vertex_shader_path{cube_vertex_shader_path},
+              _texture_mapping_fragment_shader_path{cube_fragment_shader_path},
               _diffuse_tex_path{wooden_box_diffuse_tex_path},
               _wooden_box_specular_tex_path{wooden_box_specular_tex_path} {
         //
@@ -167,10 +167,10 @@ namespace highp {
         // compile and link shaders.
         opengl_status_checker::check_max_shader_attributes();
 
-        _shader->compile_and_link(
+        _texture_mapping_shader->compile_and_link(
                 {
-                        _shader->compile_vertex_shader(_vertex_shader_path.data()),
-                        _shader->compile_fragment_shader(_fragment_shader_path.data())
+                        _texture_mapping_shader->compile_vertex_shader(_texture_mapping_vertex_shader_path.data()),
+                        _texture_mapping_shader->compile_fragment_shader(_texture_mapping_fragment_shader_path.data())
                 }
         );
 
@@ -265,43 +265,43 @@ namespace highp {
 
 #pragma endregion texture
 
-        _shader->use();
+        _texture_mapping_shader->use();
 
-        _shader->set_int("material.diffuse", 0);
-        _shader->set_int("material.specular", 1);
-        _shader->set_float("material.shininess", 64.0f);
+        _texture_mapping_shader->set_int("material.diffuse", 0);
+        _texture_mapping_shader->set_int("material.specular", 1);
+        _texture_mapping_shader->set_float("material.shininess", 64.0f);
 
         // directional light shader parameters
-        _shader->set_vec3("dir_light.direction", {-0.2f, -0.3f, -1.0f});
+        _texture_mapping_shader->set_vec3("dir_light.direction", {-0.2f, -0.3f, -1.0f});
 
-        _shader->set_vec3("dir_light.ambient", {0.02f, 0.02f, 0.02f});
-        _shader->set_vec3("dir_light.diffuse", {0.2f, 0.2f, 0.2f});
-        _shader->set_vec3("dir_light.specular", {1.0f, 1.0f, 1.0f});
+        _texture_mapping_shader->set_vec3("dir_light.ambient", {0.02f, 0.02f, 0.02f});
+        _texture_mapping_shader->set_vec3("dir_light.diffuse", {0.2f, 0.2f, 0.2f});
+        _texture_mapping_shader->set_vec3("dir_light.specular", {1.0f, 1.0f, 1.0f});
 
         // point light shader parameters
         for (auto i = 0; i < 4; ++i) {
-            _shader->set_vec3(fmt::format("point_lights[{}].position", i), point_lights_positions[i]);
+            _texture_mapping_shader->set_vec3(fmt::format("point_lights[{}].position", i), point_lights_positions[i]);
 
-            _shader->set_float(fmt::format("point_lights[{}].constant", i), 1.0f);
-            _shader->set_float(fmt::format("point_lights[{}].linear", i), 0.09f);
-            _shader->set_float(fmt::format("point_lights[{}].quadratic", i), 0.032f);
+            _texture_mapping_shader->set_float(fmt::format("point_lights[{}].constant", i), 1.0f);
+            _texture_mapping_shader->set_float(fmt::format("point_lights[{}].linear", i), 0.09f);
+            _texture_mapping_shader->set_float(fmt::format("point_lights[{}].quadratic", i), 0.032f);
 
-            _shader->set_vec3(fmt::format("point_lights[{}].ambient", i), {0.02f, 0.02f, 0.02f});
-            _shader->set_vec3(fmt::format("point_lights[{}].diffuse", i), {0.7f, 0.7f, 0.7f});
-            _shader->set_vec3(fmt::format("point_lights[{}].specular", i), {1.0f, 1.0f, 1.0f});
+            _texture_mapping_shader->set_vec3(fmt::format("point_lights[{}].ambient", i), {0.02f, 0.02f, 0.02f});
+            _texture_mapping_shader->set_vec3(fmt::format("point_lights[{}].diffuse", i), {0.7f, 0.7f, 0.7f});
+            _texture_mapping_shader->set_vec3(fmt::format("point_lights[{}].specular", i), {1.0f, 1.0f, 1.0f});
         }
 
         // spot light shader parameters
-        _shader->set_vec3("spot_light.ambient", {0.2f, 0.2f, 0.2f});
-        _shader->set_vec3("spot_light.diffuse", {1.2f, 1.2f, 1.2f});
-        _shader->set_vec3("spot_light.specular", {3.0f, 3.0f, 3.0f});
+        _texture_mapping_shader->set_vec3("spot_light.ambient", {0.2f, 0.2f, 0.2f});
+        _texture_mapping_shader->set_vec3("spot_light.diffuse", {1.2f, 1.2f, 1.2f});
+        _texture_mapping_shader->set_vec3("spot_light.specular", {3.0f, 3.0f, 3.0f});
 
-        _shader->set_float("spot_light.inner_cutoff", glm::cos(glm::radians(12.5f)));
-        _shader->set_float("spot_light.outer_cutoff", glm::cos(glm::radians(17.5f)));
+        _texture_mapping_shader->set_float("spot_light.inner_cutoff", glm::cos(glm::radians(12.5f)));
+        _texture_mapping_shader->set_float("spot_light.outer_cutoff", glm::cos(glm::radians(17.5f)));
 
-        _shader->set_float("spot_light.constant", 1.0f);
-        _shader->set_float("spot_light.linear", 0.09f);
-        _shader->set_float("spot_light.quadratic", 0.032f);
+        _texture_mapping_shader->set_float("spot_light.constant", 1.0f);
+        _texture_mapping_shader->set_float("spot_light.linear", 0.09f);
+        _texture_mapping_shader->set_float("spot_light.quadratic", 0.032f);
 
         while (!glfwWindowShouldClose(_window)) {
 
@@ -346,15 +346,15 @@ namespace highp {
 //            };
 
             // draw cubes.
-            _shader->use();
+            _texture_mapping_shader->use();
 
-            _shader->set_vec3("spot_light.position", shared::camera::get_camera_pos());
-            _shader->set_vec3("spot_light.direction", shared::camera::get_camera_front());
+            _texture_mapping_shader->set_vec3("spot_light.position", shared::camera::get_camera_pos());
+            _texture_mapping_shader->set_vec3("spot_light.direction", shared::camera::get_camera_front());
 
-            _shader->set_vec3("view_pos", shared::camera::get_camera_pos());
+            _texture_mapping_shader->set_vec3("view_pos", shared::camera::get_camera_pos());
 
-            _shader->set_mat4("view", shared::camera::get_view_matrix());
-            _shader->set_mat4("projection", proj);
+            _texture_mapping_shader->set_mat4("view", shared::camera::get_view_matrix());
+            _texture_mapping_shader->set_mat4("projection", proj);
 
             glBindVertexArray(cube_vao);
 
@@ -372,7 +372,7 @@ namespace highp {
                 cube_model = glm::translate(cube_model, cube_positions[i]);
                 cube_model = glm::rotate(cube_model, glm::radians(next_step_angle), {0.3f, 0.5f, 0.0f});
 
-                _shader->set_mat4("model", cube_model);
+                _texture_mapping_shader->set_mat4("model", cube_model);
 
                 glDrawArrays(GL_TRIANGLES, 0, 36);
             }
