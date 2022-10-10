@@ -59,6 +59,16 @@ namespace highp::shared {
         if (::glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
             camera_pos += final_camera_speed * glm::normalize(glm::cross(camera_front, _camera_up));
         }
+
+        // move upward
+        if (::glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+            camera_pos += final_camera_speed * _camera_up;
+        }
+
+        // move downward
+        if (::glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+            camera_pos -= final_camera_speed * _camera_up;
+        }
     }
 
     void camera::on_update_mouse(GLFWwindow *window, double x, double y) {

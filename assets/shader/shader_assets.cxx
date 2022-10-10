@@ -127,6 +127,12 @@ namespace highp::assets::shader {
                         make_source_path("multiple lights", "main.vert"),
                         make_source_path("multiple lights", "main.frag"),
                 };
+
+            case e_shader_asset_type::depth_visualizing:
+                return {
+                        make_source_path("depth visualizing", "main.vert"),
+                        make_source_path("depth visualizing", "main.frag")
+                };
         }
     }
 }
