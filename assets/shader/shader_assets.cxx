@@ -145,6 +145,30 @@ namespace highp::assets::shader {
                         make_source_path("alpha cutout", "main.vert"),
                         make_source_path("alpha cutout", "main.frag")
                 };
+
+            case e_shader_asset_type::screen_buffer:
+                return {
+                        make_source_path("screen buffer", "main.vert"),
+                        make_source_path("screen buffer", "main.frag")
+                };
+
+            case e_shader_asset_type::inversion:
+                return {
+                        make_source_path("screen buffer", "main.vert"),
+                        make_source_path("post processing/inversion", "main.frag")
+                };
+
+            case e_shader_asset_type::grayscale:
+                return {
+                        make_source_path("screen buffer", "main.vert"),
+                        make_source_path("post processing/grayscale", "main.frag")
+                };
+
+            case e_shader_asset_type::sharpen:
+                return {
+                        make_source_path("screen buffer", "main.vert"),
+                        make_source_path("post processing/kernel", "sharpen.frag")
+                };
         }
     }
 }

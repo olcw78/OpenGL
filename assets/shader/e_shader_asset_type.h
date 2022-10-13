@@ -28,7 +28,13 @@ namespace highp::assets::shader {
         multiple_lights,
         depth_visualizing,
         single_color,
-        alpha_cutout
+        alpha_cutout,
+        screen_buffer,
+        inversion,
+        grayscale,
+        sharpen,
+        blur,
+        edge_detection
     };
 }
 
