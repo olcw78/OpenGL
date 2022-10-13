@@ -9,7 +9,7 @@ int main() {
     auto const &shader_paths2 = get_shader_paths(e_shader_asset_type::texture_mapping);
 
     highp::Runner(
-            1920, 1080,
+            1024, 768,
             0.1f, 300.0f,
             "18. alpha blending",
             shader_paths1[0],

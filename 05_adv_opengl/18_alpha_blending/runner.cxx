@@ -11,7 +11,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include <imgui.h>
+//#include <imgui.h>
+
+#include <map>
+
 
 #include "runner.h"
 
@@ -154,8 +157,7 @@ namespace highp {
             return -1;
         }
 
-        glViewport(0, 0, _width, _height);
-        glEnable(GL_CULL_FACE);
+//        glEnable(GL_CULL_FACE);
 //        glCullFace(GL_BACK);
 //        glCullFace(GL_CCW);
 
@@ -165,6 +167,8 @@ namespace highp {
         glfwSetCursorPosCallback(_window, Runner::on_receive_mouse_event_impl);
 
         glfwSetScrollCallback(_window, Runner::on_receive_scroll_event);
+
+        glViewport(0, 0, _width, _height);
 
         // compile and link shaders.
         opengl_status_checker::check_max_shader_attributes();
@@ -314,7 +318,7 @@ namespace highp {
             // 3. srcAlpha
             // 4. dstAlpha
 
-//            glBlendEquation(GL_FUNC_ADD);
+            glBlendEquation(GL_FUNC_ADD);
 
             // glDepthMask(GL_FALSE); - disable writing depth buffer.
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -333,21 +337,6 @@ namespace highp {
             _box_shader->use();
             _box_shader->set_mat4("view", shared::camera::get_view_matrix());
             _box_shader->set_mat4("projection", proj);
-
-            // draw plane with texture
-            glBindVertexArray(grass_vao);
-
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, grass_diffuse_tex);
-
-            glm::mat4 grass_model{1.0f};
-            for (glm::vec3 const &pos: grass_positions) {
-                grass_model = glm::translate(grass_model, pos);
-                _box_shader->set_mat4("model", grass_model);
-                glDrawArrays(GL_TRIANGLES, 0, 6);
-            }
-
-            glBindVertexArray(0);
 
             // draw plane.
             glBindVertexArray(plane_vao);
@@ -371,6 +360,35 @@ namespace highp {
             cube_model = glm::translate(cube_model, {2.0f, 0.0f, 0.0f});
             _box_shader->set_mat4("model", cube_model);
             glDrawArrays(GL_TRIANGLES, 0, 36);
+
+            glBindVertexArray(0);
+
+            // draw plane with texture
+            glBindVertexArray(grass_vao);
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, grass_diffuse_tex);
+
+            glm::mat4 grass_model{1.0f};
+//            for (glm::vec3 const &pos: grass_positions) {
+//                grass_model = glm::translate(grass_model, pos);
+//                _box_shader->set_mat4("model", grass_model);
+//                glDrawArrays(GL_TRIANGLES, 0, 6);
+//            }
+
+            std::map<float, glm::vec3> sorted_distances;
+            for (auto const &grass_position: grass_positions) {
+                const float distance = glm::length(shared::camera::get_camera_pos() - grass_position);
+                sorted_distances[distance] = grass_position;
+            }
+
+            for (auto it = sorted_distances.rbegin(); it != sorted_distances.rend(); ++it) {
+                const auto &[distance, pos] = *it;
+                grass_model = glm::mat4{1.0f};
+                grass_model = glm::translate(grass_model, pos);
+                _box_shader->set_mat4("model", grass_model);
+                glDrawArrays(GL_TRIANGLES, 0, 6);
+            }
 
             glBindVertexArray(0);
 
